@@ -88,7 +88,6 @@ default: break;
           Mode = "OFF";
           Steering = false;
          // GPS_Was_Available = false;
-          Accept_Terms = 0;  // this quits printing the Terms and conditions on start up
           Screen = 0;  
           //toggle = false; // resets key 3 to tack mode instead of wind mode
 
@@ -115,7 +114,7 @@ void Key1_Pressed()    // Activate steering and hold course
           Steering_Mode = 1;
           Steering = true;
           Mode = "COMP";
-          heading_to_steer = heading;
+          heading_to_steer = heading;  // tells the pilot to stay on the course at time of activation.
           integral_error = 0; // reset integral error
           #if RUDDER_OFFSET == 1
             Rudder_Offset = rudder_position; // placed before toggle this works for TACK and WIND see notes 10.21.16 
@@ -152,79 +151,85 @@ void Key1_Pressed()    // Activate steering and hold course
    if ( debouncer.fell() ) {  
 //if (Steering_Mode==0){Key1_Pressed();}
 //else {Key0_Pressed();}
-toggleAP() 
+toggleAP(); 
 }
- Serial.println("redbutton toggle");
  }
 
 void toggleAP(){  // Toggle between steering activate/deactivate
 if (Steering_Mode==0){Key1_Pressed();}
 else {Key0_Pressed();}
  Serial.println("toggle on/off");
+ Serial.println(heading_to_steer);
                 notifyClients();   // send notification to web interface to update values
 }
 
 void remotesub10(){ 
-   Serial.println("minus 10 deg");  
+
 if(Steering_Mode==1) heading_to_steer = heading_to_steer - 10;
               if (heading_to_steer < 0) heading_to_steer = heading_to_steer +360;
               if (heading_to_steer > 360) heading_to_steer = heading_to_steer -360; 
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
+                 Serial.println("minus 10 deg");  
                              notifyClients();   // send notification to web interface to update values
             
 }
 
 void remoteadd10(){
-     Serial.println("plus 10 deg");
+
 if(Steering_Mode==1) heading_to_steer = heading_to_steer + 10;
               if (heading_to_steer < 0) heading_to_steer = heading_to_steer +360;
               if (heading_to_steer > 360) heading_to_steer = heading_to_steer -360; 
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
+                   Serial.println("plus 10 deg");
                              notifyClients();   // send notification to web interface to update values
 }
 
 void remotesub1(){
-     Serial.println("minus 1 deg");
+
 if(Steering_Mode==1) heading_to_steer = heading_to_steer - 1;
               if (heading_to_steer < 0) heading_to_steer = heading_to_steer +360;
               if (heading_to_steer > 360) heading_to_steer = heading_to_steer -360; 
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
+                   Serial.println("minus 1 deg");
                notifyClients();   // send notification to web interface to update values
 }
 
 
 void remoteadd1(){
-     Serial.println("plus 1 deg");
+
 if(Steering_Mode==1) heading_to_steer = heading_to_steer + 1;
               if (heading_to_steer < 0) heading_to_steer = heading_to_steer +360;
               if (heading_to_steer > 360) heading_to_steer = heading_to_steer -360; 
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
+                   Serial.println("plus 1 deg");
                notifyClients();   // send notification to web interface to update values
 }
 
 
 void remotesub90(){
-     Serial.println("minus 90 deg");
+
 if(Steering_Mode==1) heading_to_steer = heading_to_steer - 90;
               if (heading_to_steer < 0) heading_to_steer = heading_to_steer +360;
               if (heading_to_steer > 360) heading_to_steer = heading_to_steer -360; 
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
+                   Serial.println("minus 90 deg");
                notifyClients();   // send notification to web interface to update values
 }
 
 
 void remoteadd90(){
-     Serial.println("plus 90 deg");
+
 if(Steering_Mode==1) heading_to_steer = heading_to_steer + 90;
               if (heading_to_steer < 0) heading_to_steer = heading_to_steer +360;
               if (heading_to_steer > 360) heading_to_steer = heading_to_steer -360; 
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
+                   Serial.println("plus 90 deg");
                notifyClients();   // send notification to web interface to update values
 }
 

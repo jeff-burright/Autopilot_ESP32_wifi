@@ -226,7 +226,7 @@ RUDDER_MODE
      float counts_min = 195;
      float counts;
      
-     counts = analogRead(36);  // rudder potentiometer pin
+     counts = analogRead(34);  // rudder potentiometer pin
      //Serial.print("Rudder = "); // use these print lines to get counts for calibration
      //Serial.println(counts);
       if(counts >= counts_at_zero) // linear calibration from zero
@@ -288,8 +288,11 @@ RUDDER_MODE
        //Serial_MotorControl.write(motorspeed >> 5);
       // motor.stop();  // L298 commented out
 
-analogWrite(L_PWM, 0); //  IBT-2 direct override
-analogWrite(R_PWM, 0);
+//analogWrite(L_PWM, 0); //  IBT-2 direct override
+//analogWrite(R_PWM, 0);
+
+ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(8, 0);
 
 //motorController.Stop();   // library may be bugged
 
@@ -314,9 +317,14 @@ analogWrite(R_PWM, 0);
      
      #if Motor_Controller == 3   // IBT-2 selected
 
-motorController.TurnLeft(motorspeed);
+//motorController.TurnLeft(motorspeed);
+
+ledcWrite(8, 0);
+ledcWrite(7, motorspeed);    // changing to ledcwrite for ESP32 PWM
+
 
 // --------------voltage-based wheel stop - experimental
+/*
 if(end_left || current > max_current){     
       Serial.print(current);
       Serial.println(" current too high end_left reached");
@@ -326,6 +334,7 @@ if(end_left || current > max_current){
     }
      if(end_right && motorspeed>0)end_right = false; //if we were at the right end, and now turning left  again, than end_right is false; 
      Right_Rudder();
+     */
 // ------------------ end wheel stop
      #endif
      
@@ -352,9 +361,15 @@ if(end_left || current > max_current){
      
      #if Motor_Controller == 3   // IBT-2 selected
 
-motorController.TurnRight(motorspeed);
+//motorController.TurnRight(motorspeed);
+
+ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(8, motorspeed);
+
+
 
 // voltage wheel stop
+/*
 if(end_right || current > max_current){
       Serial.println("current too high end_right reached");
       end_right = true;      
@@ -363,6 +378,7 @@ if(end_right || current > max_current){
     }
     if(end_left && motorspeed>0)end_left = false; 
 Left_Rudder();
+*/
 // end voltage wheel stop
 
      #endif

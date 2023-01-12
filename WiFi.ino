@@ -11,6 +11,9 @@
 
 void notifyClients() {
   ws.textAll(String(Steering_Mode));
+//  ws.textAll(String(heading));
+
+
 }
 
 // remote control commands from HTML interface websocket inputs to ESP32 

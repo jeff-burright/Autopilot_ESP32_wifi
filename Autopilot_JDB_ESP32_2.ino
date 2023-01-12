@@ -5,12 +5,13 @@ If using Wifi, pilot is operational with only ESP32, IMU compass, motor controll
 WIFI control of the pilot accessible by connecting a device to the pilot's SSID and directing browser to 192.168.4.1.
 
 Issues:
-Haven't tested rudder feedback yet.
+Haven't tested rudder feedback yet. Currently turned off in settings below.
 Compass not yet calibrated (doesn't list correct heading but works keeping a course).
-Need to confirm heading information works on HTML (coded in but not yet tested with IMU connected).
-Need to double check pinout assignments.
+Heading information works on HTML but has to be refreshed. Next version will sort out real-time websockets.
 
-Experimental aspects: wiper motor noise reduction via PWM frequency modulation; wheel-stop control via current sense on IBT-2
+Experimental aspects: 
+wiper motor noise reduction via PWM frequency modulation seems to work. 
+wheel-stop control via current sense on IBT-2 causes ESP32 to stack overflow, so it's disabled. 
 
 Thanks to the work of Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot) from which this project grew.
 Use this code at your own risk. 
@@ -51,7 +52,6 @@ AsyncWebSocket ws("/ws");
     //determines which set of calibration data is used these extra versions were added to code 7/11/17 J14.4
 #define GPS_Used 0 // 1 to include GPS code, 0 to exclude it
 #define Motor_Controller 3  // 1 for Pololu Qik dual controller, 2 for Pololu Trex dual controller, 3 for generic Controller
-#define Clutch_Solenoid 0 // 1 a clutch solenoid is used, 0 is not used, currently clutch solenoid does not work with single Simple Pololou Controller
 #define RUDDER_MODE 1 // 0 uses rudder position, 1 does not
 #define RF24_Attached 0 // 0 if RF 24 radio modules are not attached, 1 if they are used
 #define Wind_Input 0 // 1 to use NMEA wind data. 0 to not use wind data
@@ -61,7 +61,6 @@ AsyncWebSocket ws("/ws");
  float PID_Ks[4] = {2, .4, 2, .0005};  // [ K(overall), K(heading error), K(differential error), K(integral error)] // use with rudder_command = PID_output
  // when tested summer 2013 used 2, .4, 4, 0.  Used {2, .4, 1, .000} in 2015. Used {1, .4, 2, .000} operationg without Rudder indicator
  #define PID_MODE 0 // See description PID tab.
- boolean Accept_Terms = 0; //  1 user must accept terms to run.  0 user accepts terms by setting this value to 0
  boolean just_started = 0; // to do a second setup so get a better gyro startup
  //float Kxte[3] = {0, 0, 0}; // used for XTE PID, use this to zero out XTE tracking
 //float Kxte[3] = {.2, 0, 0}; // {.2, 4, .0004} baseline; {.05, .5, .0005}last used;  0 is proportional, 1 is differential, 2 is integral error, see GPS_Steer() in PID
@@ -175,14 +174,14 @@ int IR_RECEIVE_PIN = 27;
  // ----------------- IBT-2 motor controller ----------------------
 
 //assign IBT-2 Pins
-const uint8_t EN = 34;  // assigned but not used. EN pins on controller are connected to 5v voltage to controller to make them always active.
+const uint8_t EN = 25;  // assigned but not used. EN pins on controller are connected to 5v voltage to controller to make them always active.
 const uint8_t L_PWM = 32;
 const uint8_t R_PWM = 33;
 
 // Motor Controller PWM Frequency setting (EXPERIMENTAL to fix motor noise)
- 	const int PWMFreq = 5000; /* 5 KHz */
-	const int PWMChannel = 0;
-	const int PWMResolution = 10;
+ 	const int PWMFreq = 24000; /* 24 KHz. If this doesn't work, try 5000. can go up to 62khz */
+	const int PWMChannel = 7;
+	const int PWMResolution = 8;
 
 //current sensing IBT-2 for voltage-based wheel stop overload protection  ----- EXPERIMENTAL
 #define CS 35 //current senseo
@@ -194,7 +193,7 @@ bool end_right = false; // used in PID
 // ----- end wheel stop
 
 //initiate motor controller
-BTS7960 motorController(EN, L_PWM, R_PWM);
+//BTS7960 motorController(EN, L_PWM, R_PWM);       *commented out for experimentation
 
    int motorspeedMIN = 30; // was 555. this value is the minimum speed sent to controller if left or right rudder is commanded
                            //  rudder stop will still send 0. Use to overcome starting torque. Set so if rudder error greater than the deadband the rudder
@@ -559,6 +558,10 @@ margin-bottom: 15px;
       state = "OFF";
     }
     document.getElementById('state').innerHTML = state;
+
+
+
+   
   }
 
   function onLoad(event) {
@@ -641,7 +644,7 @@ initLCDbacklight();
 
      Serial.begin(115200); // Serial conection to Serial Monitor
      delay(1000); // give chip some warmup on powering up   
-     Serial.println();
+     Serial.println("Let's go somewhere");
 
 // Red Button setup     
 debouncer.attach(BUTTON_PIN,INPUT_PULLUP); // Attach the debouncer to a pin with INPUT_PULLUP mode
@@ -656,9 +659,15 @@ IrReceiver.begin(IR_RECEIVE_PIN, DISABLE_LED_FEEDBACK);
 
 
 //PWM Frequency Set (to hopefully reduce motor noise, but untested so far)
-ledcSetup(PWMChannel, PWMFreq, PWMResolution); //sets frequency (3kHz) and resolution (8bit) for motor controller PWM
-ledcAttachPin(L_PWM, PWMChannel); //assigns PWM channel for frequency shift (motor noise fix)
-ledcAttachPin(R_PWM, PWMChannel); //assigns PWM channel for frequency shift (motor noise fix)
+//ledcSetup(PWMChannel, PWMFreq, PWMResolution); //sets frequency (3kHz) and resolution (8bit) for motor controller PWM
+//ledcAttachPin(L_PWM, PWMChannel); //assigns PWM channel for frequency shift (motor noise fix)
+//ledcAttachPin(R_PWM, PWMChannel); //assigns PWM channel for frequency shift (motor noise fix)
+
+
+ledcSetup(7,24000,8);
+ledcSetup(8,24000,8);
+ledcAttachPin(L_PWM, 7); //assigns PWM channel for frequency shift (motor noise fix)
+ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise fix)
 
 
 // ------------------------------    WIFI setup   ------------------------------------------
@@ -667,7 +676,7 @@ ledcAttachPin(R_PWM, PWMChannel); //assigns PWM channel for frequency shift (mot
   WiFi.softAP(ssid, password);  //changed from WiFi.begin to WiFi.softAP to create access point for phone to connect (no internet passthrough).
   //while (WiFi.status() != WL_CONNECTED) {
   //  delay(1000);
-  //  Serial.println("Connecting to WiFi..");
+    Serial.println("Starting WiFi access point..");
 
 // finding IP address of Access Point
     IPAddress IP = WiFi.softAPIP();
@@ -692,6 +701,7 @@ Serial.println(IP);          // default is 192.168.4.1
  #if Compass == 0
  //SETUP FOR MinIMU9 
  lcd.print("Starting Compass");
+ Serial.println("Starting Compass");
      I2C_Init();
    //Serial.println("Pololu MinIMU-9 + Arduino AHRS");
    // digitalWrite(STATUS_LED,LOW);
@@ -724,12 +734,13 @@ Serial.println(IP);          // default is 192.168.4.1
   // End setup data for MinIMU9
  #endif
  
-
  Key0_Pressed();         // make doubly-sure AP steering deactivated as intial condition
+ Serial.println("Setup Complete");
 
  }  // end setup
   
-/*********************************************/
+
+/****************************   BEGIN LOOP   ********************************/
  
 
 void loop()
