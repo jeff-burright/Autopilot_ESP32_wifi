@@ -9,10 +9,33 @@
 
 
 
+void readheading() {
+  
+  /*
+  char headstring[8];
+   dtostrf(heading,1,1,headstring);
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send_P(200, "text/html", index_html, processor);  
+  });
+*/
+String headingstring = String(heading);
+ws.textAll(headingstring);
+
+}
+
 void notifyClients() {
   ws.textAll(String(Steering_Mode));
-//  ws.textAll(String(heading));
 
+  //ws.textAll(processor(const String& var));
+
+
+ // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+ //   request->send_P(200, "text/html", index_html, processor);  
+ // });
+ // char headstring[8];
+ // dtostrf(heading,1,1,headstring);
+ // ws.textAll(String(headstring));
 
 }
 
@@ -25,52 +48,57 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
         if (strcmp((char*)data, "toggleAP") == 0) {
      //Steering_Mode = !Steering_Mode;
      toggleAP();  
-      notifyClients();
+    //  notifyClients();
     }
 
        else if (strcmp((char*)data, "subten") == 0) {
      //Steering_Mode = !Steering_Mode;
      remotesub10();  
-      notifyClients();
+     // notifyClients();
     }
 
            else if (strcmp((char*)data, "addten") == 0) {
      //Steering_Mode = !Steering_Mode;
      remoteadd10();  
-      notifyClients();
+     // notifyClients();
     }
 
            else if (strcmp((char*)data, "sub1") == 0) {
      //Steering_Mode = !Steering_Mode;
      remotesub1();  
-      notifyClients();
+    //  notifyClients();
     }
 
            else if (strcmp((char*)data, "add1") == 0) {
      //Steering_Mode = !Steering_Mode;
      remoteadd1();  
-      notifyClients();
+     // notifyClients();
     }
 
            else if (strcmp((char*)data, "subninety") == 0) {
      //Steering_Mode = !Steering_Mode;
      remotesub90();  
-      notifyClients();
+     // notifyClients();
     }
 
            else if (strcmp((char*)data, "addninety") == 0) {
      //Steering_Mode = !Steering_Mode;
      remoteadd90();  
-      notifyClients();
+     // notifyClients();
     }
 
            else if (strcmp((char*)data, "lcdlightswitch") == 0) {
      //Steering_Mode = !Steering_Mode;
      lcdlightswitch();  
-      notifyClients();
+     // notifyClients();
     }
 
-  else {notifyClients();}
+               else if (strcmp((char*)data, "readheading") == 0) {
+     //Steering_Mode = !Steering_Mode;
+     readheading();
+    }
+
+ // else {}
 
     }
 }
@@ -104,6 +132,7 @@ void initWebSocket() {
 // Sends heading and status information to the HTML as part of the processor function in the HTTP_Get call
 String processor(const String& var){
   Serial.println(var);
+  Serial.println(heading);
   
   if(var == "STATE"){
     if (Steering_Mode == 1){        // this actually works to report the state on the phone
@@ -119,6 +148,8 @@ else if(var == "HEAD") return String(heading, 0);
     else if(var == "HTS") return String(heading_to_steer, 0);
     
 return String();
+
+
 
 
 }

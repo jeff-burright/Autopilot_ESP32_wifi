@@ -43,7 +43,7 @@ void Bearing_Rate()
 #endif
 /***********************  COMPASS CORRECTION *********************************/
 
-void JNE_AP_Compass_Correction()
+void JNE_AP_Compass_Correction()  // currently not used because the GY-511 doesn't work with the magnetic heading code.
 {
 #if Compass == 0 
   MAG_Heading_Degrees = ToDeg(MAG_Heading);  // coding below here is JNE

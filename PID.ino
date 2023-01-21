@@ -282,11 +282,6 @@ RUDDER_MODE
    #endif
 
    #if Motor_Controller == 3 
-    //   motorspeed = 0;
-      // Serial_MotorControl.write(Motor_1_fwd);
-       //Serial_MotorControl.write(motorspeed & 0x1F);
-       //Serial_MotorControl.write(motorspeed >> 5);
-      // motor.stop();  // L298 commented out
 
 //analogWrite(L_PWM, 0); //  IBT-2 direct override
 //analogWrite(R_PWM, 0);
