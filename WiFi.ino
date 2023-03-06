@@ -8,34 +8,14 @@
 // Import required libraries
 
 
-
-void readheading() {
-  
-  /*
-  char headstring[8];
-   dtostrf(heading,1,1,headstring);
-
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/html", index_html, processor);  
-  });
-*/
-String headingstring = String(heading);
+void readheading() {           // creates the data packet that is sent to the HTML every X seconds (set in HTML code on main page)
+String headingstring = String(heading, 0);
 ws.textAll(headingstring);
-
 }
 
-void notifyClients() {
+void notifyClients() {              // toggles the AP ON/OFF button visualization in the HTML
   ws.textAll(String(Steering_Mode));
-
-  //ws.textAll(processor(const String& var));
-
-
- // server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
- //   request->send_P(200, "text/html", index_html, processor);  
- // });
- // char headstring[8];
- // dtostrf(heading,1,1,headstring);
- // ws.textAll(String(headstring));
+//  ws.textAll(String(heading));
 
 }
 
@@ -46,59 +26,96 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
     data[len] = 0;
 
         if (strcmp((char*)data, "toggleAP") == 0) {
-     //Steering_Mode = !Steering_Mode;
      toggleAP();  
-    //  notifyClients();
     }
 
        else if (strcmp((char*)data, "subten") == 0) {
-     //Steering_Mode = !Steering_Mode;
      remotesub10();  
-     // notifyClients();
     }
 
            else if (strcmp((char*)data, "addten") == 0) {
-     //Steering_Mode = !Steering_Mode;
      remoteadd10();  
-     // notifyClients();
     }
 
            else if (strcmp((char*)data, "sub1") == 0) {
-     //Steering_Mode = !Steering_Mode;
      remotesub1();  
-    //  notifyClients();
     }
 
            else if (strcmp((char*)data, "add1") == 0) {
-     //Steering_Mode = !Steering_Mode;
      remoteadd1();  
-     // notifyClients();
     }
 
            else if (strcmp((char*)data, "subninety") == 0) {
-     //Steering_Mode = !Steering_Mode;
      remotesub90();  
-     // notifyClients();
     }
 
            else if (strcmp((char*)data, "addninety") == 0) {
-     //Steering_Mode = !Steering_Mode;
      remoteadd90();  
-     // notifyClients();
     }
 
            else if (strcmp((char*)data, "lcdlightswitch") == 0) {
-     //Steering_Mode = !Steering_Mode;
      lcdlightswitch();  
-     // notifyClients();
+    }
+
+               else if (strcmp((char*)data, "dodgeleft") == 0) {
+     dodgeleft();  
+    }
+
+               else if (strcmp((char*)data, "dodgeright") == 0) {
+     dodgeright();  
     }
 
                else if (strcmp((char*)data, "readheading") == 0) {
-     //Steering_Mode = !Steering_Mode;
      readheading();
     }
 
- // else {}
+               else if (strcmp((char*)data, "Rup") == 0) {
+     Rup();
+    }
+
+               else if (strcmp((char*)data, "Rdown") == 0) {
+     Rdown();
+    }
+
+               else if (strcmp((char*)data, "Gup") == 0) {
+     Gup();
+    }
+
+               else if (strcmp((char*)data, "Gdown") == 0) {
+     Gdown();
+    }
+
+               else if (strcmp((char*)data, "Pup") == 0) {
+     Pup();
+    }
+
+               else if (strcmp((char*)data, "Pdown") == 0) {
+     Pdown();
+    }
+
+               else if (strcmp((char*)data, "Iup") == 0) {
+     Iup();
+    }
+
+               else if (strcmp((char*)data, "Idown") == 0) {
+     Idown();
+    }
+
+               else if (strcmp((char*)data, "Dup") == 0) {
+     Dup();
+    }
+
+               else if (strcmp((char*)data, "Ddown") == 0) {
+     Ddown();
+    }
+
+               else if (strcmp((char*)data, "magvarup") == 0) {
+     magvarup();
+    }
+
+               else if (strcmp((char*)data, "magvardown") == 0) {
+     magvardown();
+    }
 
     }
 }
@@ -132,7 +149,6 @@ void initWebSocket() {
 // Sends heading and status information to the HTML as part of the processor function in the HTTP_Get call
 String processor(const String& var){
   Serial.println(var);
-  Serial.println(heading);
   
   if(var == "STATE"){
     if (Steering_Mode == 1){        // this actually works to report the state on the phone
@@ -144,12 +160,16 @@ String processor(const String& var){
   }
 
 else if(var == "HEAD") return String(heading, 0);
-
-    else if(var == "HTS") return String(heading_to_steer, 0);
+        else if(var == "HTS") return String(heading_to_steer, 0);
+        else if(var == "RUDD") return String(rudder_position, 0);
+        else if(var == "DEADBAND") return String(deadband, 1);
+    else if(var == "KOVERALL") return String(K_overall, 1);
+    else if(var == "KHEAD") return String(K_heading, 1);
+    else if(var == "KDIFF") return String(K_differential, 1);
+    else if(var == "KINTEGRAL") return String(K_integral, 4);
+        else if(var == "MAGVAR") return String(MagVar_default, 1);
     
 return String();
-
-
 
 
 }

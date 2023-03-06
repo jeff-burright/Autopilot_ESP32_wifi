@@ -18,21 +18,18 @@
     counter3++;
     timer_old = timer;
     
-    
     timer=millis();
 
 
   #if Compass == 0
-
-  /*   //this was causing the compass GY-511 to not show readings, so it's commented out
     if (timer>timer_old)
       G_Dt = (timer-timer_old)/1000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
     else
       G_Dt = 0;
-    */
+    
 
-/*
-    // *** DCM algorithm           //this was causing compass GY-511 to not show readings, so commented out. 
+
+    // *** DCM algorithm
     // Data adquisition
     Read_Gyro();   // This read gyro data
     Read_Accel();     // Read I2C accelerometer
@@ -42,7 +39,7 @@
     Drift_correction();
     Euler_angles();
     Bearing_Rate();
-   */ 
+    
  #endif
 
 
@@ -64,13 +61,13 @@
      }
     */ 
       counter=0;
-  
+   #if Compass == 0
       Read_Compass();    // Read I2C magnetometer
-//heading = compass.heading();
-
-      //Compass_Heading(); // Calculate magnetic heading Pololus Mag heading 
-      //JNE_AP_Compass_Correction();  // compute true heading
+      Compass_Heading(); // Calculate magnetic heading Pololus Mag heading 
+      JNE_AP_Compass_Correction();  // compute true heading
        //Serial.print(heading,1); Serial.print("   "); Serial.println(bearingrate); // temporary   
+   #endif
+
  
 
     Steer_PID(); 

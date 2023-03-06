@@ -97,9 +97,6 @@ void Accel_Init()
 #else
   compass.init();
   compass.enableDefault();
-  compass.m_min = (LSM303::vector<int16_t>){-595, -425, -714};
-  compass.m_max = (LSM303::vector<int16_t>){+561, +522, +361};
-  
   switch (compass.getDeviceType())
   {
     case LSM303::device_D: // Pololu IMU9 V3
@@ -111,7 +108,6 @@ void Accel_Init()
     default: // DLM, DLH
       compass.writeReg(LSM303::CTRL_REG4_A, 0x30); // 8 g full scale: FS = 11
   }
-  //}
 #endif
 }
 
@@ -148,27 +144,18 @@ void Compass_Init()
 
 void Read_Compass()
 {
+#ifdef IMU_V5
+  mag.read();
 
-  compass.read();
+  magnetom_x = SENSOR_SIGN[6] * mag.m.x;
+  magnetom_y = SENSOR_SIGN[7] * mag.m.y;
+  magnetom_z = SENSOR_SIGN[8] * mag.m.z;
+#else
+  compass.readMag();
 
-   float AVG_Heading = .9 *AVG_Heading + .1 *compass.heading();
-   heading = AVG_Heading;  // using low pass filtered compass heading, fixes jumpy readings
-//heading = compass.heading();   // using straight results from the compass
-
-   Magnetic_Variation = MagVar_default;
-  // if (GPRMC_fix) Magnetic_Variation = MagVar;
-   
-  // Magnetic_Variation = 0;  // use this to read magnetic heading for calibration etc.
-    
-   heading = heading + Magnetic_Variation;
-   if(heading < 0) heading = 360 + heading; //already a minus, convert to 0-360
-   if(heading > 360) heading = heading -360; 
-
-
-
-  //magnetom_x = SENSOR_SIGN[6] * compass.m.x;
- // magnetom_y = SENSOR_SIGN[7] * compass.m.y;
- // magnetom_z = SENSOR_SIGN[8] * compass.m.z;
+  magnetom_x = SENSOR_SIGN[6] * compass.m.x;
+  magnetom_y = SENSOR_SIGN[7] * compass.m.y;
+  magnetom_z = SENSOR_SIGN[8] * compass.m.z;
 #endif
 }
-
+#endif

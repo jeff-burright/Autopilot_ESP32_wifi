@@ -19,7 +19,7 @@ RUDDER_MODE
 
         void Steer_PID()
         {  
-          deadband = 2.0;
+          //deadband = 2.0; 
  
 
          RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
@@ -126,7 +126,7 @@ RUDDER_MODE
         void Rudder_Control()
         {
          int motorspeed_min = 30;
-         float Rudder_Power_coeff = 0;  //  Set to 0 to not use. Use .5 for default starting point.applies more motor speed proportional to rudder position to have more force to increase rudder at
+         float Rudder_Power_coeff = 0.5;  //  Set to 0 to not use. Use .5 for default starting point.applies more motor speed proportional to rudder position to have more force to increase rudder at
              // bigger rudder angles to counter weather helm. At bigger rudder positions it takes more force to increase rudder
               
           RUDDER_POSITION();// update rudder position  
@@ -136,7 +136,8 @@ RUDDER_MODE
           if(Steering_Mode == 0 || !sw1 || !sw2)  // sw1 and sw2 need to be on for automated steering
          {
             Steering = false;
-            Rudder_Stop();
+            //Rudder_Stop();
+       //   backdrive();  // experimental
           
          }
         
@@ -177,7 +178,7 @@ RUDDER_MODE
         // when regular rudder command is less than deadband + 1, TACK_ON is turned off to revert to regular steering
  */
 // For IBT-2 Controller voltage-based wheel stop. EXPERIMENTAL. Reads CS pin fed to IS pins on IBT-2 and compares to current limit
-  current = current*0.99+analogRead(CS)*0.01;
+ // current = current*0.99+analogRead(CS)*0.01;
   // end wheel stop
 
                        if(abs(rudder_error) < deadband) 
@@ -221,14 +222,15 @@ RUDDER_MODE
   {
      float rudder_position_max = 45;
      float rudder_position_min = -45;
-     float counts_max = 900;  // from calibration in print statement
-     float counts_at_zero = 492;
-     float counts_min = 195;
+     float counts_max = 4096;  // from calibration in print statement
+     float counts_at_zero = 2048;
+     float counts_min = 0;
      float counts;
      
-     counts = analogRead(34);  // rudder potentiometer pin
-     //Serial.print("Rudder = "); // use these print lines to get counts for calibration
-     //Serial.println(counts);
+     counts = analogRead(Rudder_Pin);  // rudder potentiometer pin input
+     Serial.print("Rudder pin = "); // use these print lines to get counts for calibration
+     Serial.println(counts);
+
       if(counts >= counts_at_zero) // linear calibration from zero
       {
           rudder_position = rudder_position_max *(counts - counts_at_zero) / (counts_max - counts_at_zero);
@@ -241,7 +243,7 @@ RUDDER_MODE
     
     // rudder_position =map(rudder_position, 187,910,-45,45); 
      
-   //  Serial.print("rudder, "); Serial.println(rudder_position);
+     Serial.print("rudder angle, "); Serial.println(rudder_position);
     
   }  // END VOID RUDDER POSITION
    
@@ -282,6 +284,11 @@ RUDDER_MODE
    #endif
 
    #if Motor_Controller == 3 
+    //   motorspeed = 0;
+      // Serial_MotorControl.write(Motor_1_fwd);
+       //Serial_MotorControl.write(motorspeed & 0x1F);
+       //Serial_MotorControl.write(motorspeed >> 5);
+      // motor.stop();  // L298 commented out
 
 //analogWrite(L_PWM, 0); //  IBT-2 direct override
 //analogWrite(R_PWM, 0);
@@ -397,6 +404,31 @@ Left_Rudder();
  /*************************************************************************************/   
  
  
+/*
+void backdrive()
+{
+  analogRead(L_IS);
+  analogRead(R_IS);
+
+  #if L_IS != 0
+
+  motorspeed = L_IS / 16
+  Left_Rudder();
+
+  #endif
+
+  #if R_IS != 0
+
+  motorspeed = R_IS / 16
+  Right_Rudder();
+
+#endif
+
+
+}
+
+*/
+
  
  /*************************************************************************************/
  /*

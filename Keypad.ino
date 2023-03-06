@@ -91,9 +91,9 @@ default: break;
           Screen = 0;  
           //toggle = false; // resets key 3 to tack mode instead of wind mode
 
-
+        #if Board == Arduino
           lcd.begin(16,2);
-
+        #endif
         #if BEARINGRATE_OFFSET == 1
           bearingrate_Offset = 0; // bearingrate_Offset applied in Tab Subs void Bearing_Rate()
                                   // set with keys 1, 2, 3 maybe 22 reset to 0 in key zero
@@ -160,7 +160,7 @@ if (Steering_Mode==0){Key1_Pressed();}
 else {Key0_Pressed();}
  Serial.println("toggle on/off");
  Serial.println(heading_to_steer);
-                notifyClients();   // send notification to web interface to update values
+                //notifyClients();   // send notification to web interface to update values
 }
 
 void remotesub10(){ 
@@ -171,7 +171,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer - 10;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                  Serial.println("minus 10 deg");  
-                             notifyClients();   // send notification to web interface to update values
+                            // notifyClients();   // send notification to web interface to update values
             
 }
 
@@ -183,7 +183,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 10;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                    Serial.println("plus 10 deg");
-                             notifyClients();   // send notification to web interface to update values
+                            // notifyClients();   // send notification to web interface to update values
 }
 
 void remotesub1(){
@@ -194,7 +194,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer - 1;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                    Serial.println("minus 1 deg");
-               notifyClients();   // send notification to web interface to update values
+             //  notifyClients();   // send notification to web interface to update values
 }
 
 
@@ -206,7 +206,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 1;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                    Serial.println("plus 1 deg");
-               notifyClients();   // send notification to web interface to update values
+              // notifyClients();   // send notification to web interface to update values
 }
 
 
@@ -218,7 +218,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer - 90;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                    Serial.println("minus 90 deg");
-               notifyClients();   // send notification to web interface to update values
+              // notifyClients();   // send notification to web interface to update values
 }
 
 
@@ -230,9 +230,38 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 90;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                    Serial.println("plus 90 deg");
-               notifyClients();   // send notification to web interface to update values
+              // notifyClients();   // send notification to web interface to update values
 }
 
+
+void dodgeleft(){
+        //  if(Steering_Mode == 0 || Steering_Mode ==5) break;  
+            DODGE_MODE = true;
+            Previous_Mode = Steering_Mode;
+            Steering_Mode ==5;
+           motorspeed = motorspeedMAX;
+            Left_Rudder();
+            delay(500);
+
+  //        if(Steering_Mode == 0 || Steering_Mode ==5) return; 
+          Rudder_Stop();
+           DODGE_MODE = false;
+          Steering_Mode = Previous_Mode;
+}
+
+void dodgeright(){
+
+            DODGE_MODE = true;
+            Previous_Mode = Steering_Mode;
+             Steering_Mode ==5;
+           motorspeed = motorspeedMAX;
+            Right_Rudder();
+            delay(500);
+           Rudder_Stop(); 
+
+          DODGE_MODE = false;
+          Steering_Mode = Previous_Mode;
+          }
 
 void lcdlightswitch(){
 
@@ -240,7 +269,76 @@ if (lcdlight==0){lcd.backlight();}
 else {lcd.noBacklight();}
 lcdlight = !lcdlight;
  Serial.println("LCD lightswitch");
-                notifyClients();   // send notification to web interface to update values
+               // notifyClients();   // send notification to web interface to update values
 
 }
+
+
+void Rup(){
+  deadband = deadband + 0.5;
+}
+
+void Rdown(){
+  if (deadband !=0){
+  deadband = deadband - 0.5;
+}
+}
+
+void Gup(){
+  K_overall = K_overall + 0.5;
+}
+
+void Gdown(){
+  if (K_overall != 0){
+    K_overall = K_overall - 0.5;
+}
+}
+
+void Pup(){
+  K_heading = K_heading + 0.1;
+}
+
+void Pdown(){
+  if (K_heading != 0){
+    K_heading = K_heading - 0.1;
+}
+}
+
+void Iup(){
+  K_integral = K_integral + 0.0001;
+}
+
+void Idown(){
+  if (K_integral != 0){
+    K_integral = K_integral - 0.0001;
+}
+}
+
+void Dup(){
+  K_differential = K_differential + 0.5;
+}
+
+void Ddown(){
+  if (K_differential != 0){
+    K_differential = K_differential - 0.1;
+}
+}
+
+void magvarup(){
+  MagVar_default = MagVar_default + 1;
+}
+
+void magvardown(){
+  MagVar_default = MagVar_default - 1;
+}
+
+
+
+
+
+
+
+
+
+
 
