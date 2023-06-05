@@ -87,6 +87,7 @@ default: break;
                    Steering_Mode = 0;
           Mode = "OFF";
           Steering = false;
+          Rudder_Stop();
          // GPS_Was_Available = false;
           Screen = 0;  
           //toggle = false; // resets key 3 to tack mode instead of wind mode
@@ -236,31 +237,32 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 90;
 
 void dodgeleft(){
         //  if(Steering_Mode == 0 || Steering_Mode ==5) break;  
-            DODGE_MODE = true;
-            Previous_Mode = Steering_Mode;
-            Steering_Mode ==5;
+         //   DODGE_MODE = true;
+         //   Previous_Mode = Steering_Mode;
+          //  Steering_Mode ==5;
+          Key0_Pressed();
            motorspeed = motorspeedMAX;
             Left_Rudder();
             delay(500);
 
   //        if(Steering_Mode == 0 || Steering_Mode ==5) return; 
           Rudder_Stop();
-           DODGE_MODE = false;
-          Steering_Mode = Previous_Mode;
+         //  DODGE_MODE = false;
+         // Steering_Mode = Previous_Mode;
 }
 
 void dodgeright(){
 
-            DODGE_MODE = true;
-            Previous_Mode = Steering_Mode;
-             Steering_Mode ==5;
+           // DODGE_MODE = true;
+           // Previous_Mode = Steering_Mode;
+           //  Steering_Mode ==5;
+          Key0_Pressed();
            motorspeed = motorspeedMAX;
             Right_Rudder();
             delay(500);
            Rudder_Stop(); 
-
-          DODGE_MODE = false;
-          Steering_Mode = Previous_Mode;
+         // DODGE_MODE = false;
+         // Steering_Mode = Previous_Mode;
           }
 
 void lcdlightswitch(){

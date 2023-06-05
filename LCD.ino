@@ -18,26 +18,26 @@ void LCD(){
 
     // Jeff commented back in
     lcd.setCursor(0, 1);
-     lcd.print("HDG        ");
-     lcd.setCursor(4, 1);
+     lcd.print("H    ");
+     lcd.setCursor(2, 1);
      lcd.print(heading,0);
       
 
      if(Steering_Mode != 4)
      {   
-       lcd.setCursor(8, 1);   
-       lcd.print("HTS      ");
-       lcd.setCursor(13, 1);
-       lcd.print(heading_to_steer,1);
+       lcd.setCursor(6, 1);   
+       lcd.print("S    ");
+       lcd.setCursor(8, 1);
+       lcd.print(heading_to_steer,0);
 
      }
      
     
      if( RUDDER_MODE == 0)  // IF THERE IS A RUDDER POSITION INDICATOR
     {
-     lcd.setCursor(5,3);
-     lcd.print("Rud    "); // extra spaces clear old data
-     lcd.setCursor(9,3);
+     lcd.setCursor(12,1);
+     lcd.print("R    "); // extra spaces clear old data
+     lcd.setCursor(14,1);
      lcd.print(rudder_position,0);
     }
    

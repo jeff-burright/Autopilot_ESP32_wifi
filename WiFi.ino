@@ -161,7 +161,6 @@ String processor(const String& var){
 
 else if(var == "HEAD") return String(heading, 0);
         else if(var == "HTS") return String(heading_to_steer, 0);
-        else if(var == "RUDD") return String(rudder_position, 0);
         else if(var == "DEADBAND") return String(deadband, 1);
     else if(var == "KOVERALL") return String(K_overall, 1);
     else if(var == "KHEAD") return String(K_heading, 1);
