@@ -5,7 +5,7 @@ Arduino autopilot for ESP32. WiFi control with HTML interface (ESP32 is access p
 
 This is a simple, inexpensive (~$150 total project cost), compass-only marine autopilot that functions like a Raymarine ST2000 or similar. This code version is designed for control of a wheel, similar to the CPT autopilot. For the tiller version, see the Tiller branch of this repository. The main differences are the removal of the rudder position indicator for the tiller version and the reversal of motor commands. 
 
-Stable on ESP32. Software support for IBT-2 motor controller, IR remote receiver (optional), single button to toggle steering on/off (optional), LSM303 9DOF compass, 16x2 LCD (optional), and rudder feedback potentiometer (optional). The rudder feedback sensor controls the wheel stop function when it reaches a preset angle, so it is recommended. The parts list describes how you can build one for about $20.  
+Stable on ESP32. Software support for IBT-2 motor controller, IR remote receiver (optional), single button to toggle steering on/off (optional), LSM303 9DOF compass, 16x2 LCD (optional), and rudder feedback potentiometer (optional). The rudder feedback sensor controls the wheel stop function when it reaches a preset angle, so it is recommended for the wheel version especially. The parts list describes how you can build one for about $20.  
 
 If using Wifi from a phone or tablet, the pilot is operational with only an ESP32, IMU compass, motor controller, and motor. 
 
