@@ -11,14 +11,15 @@ WIFI control of the pilot accessible by connecting a device to the pilot's SSID 
 The WIFI interface allows adjustment of PID settings and magnetic variation. 
 
 **Version Notes:**
+--fixed tilt-compensation of compass
 --created rudder position gauge that loads in the HTML interface and updates in realtime
 --adjusted motorspeedMIN from 30 to 100. 
 --tweaked dodge functions to reactivate steering after dodging. 
---changed LCD output layout. 
+--changed LCD output layout
 
 
 **Issues:**
-None at present. Code has lots of old artifacts from Jack's version
+None at present. Pilot has been tested under motor and under sail on two boats. Code has lots of old artifacts from Jack's version
 Experimental aspects: 
 wiper motor noise reduction via PWM frequency modulation seems to work. 
 
