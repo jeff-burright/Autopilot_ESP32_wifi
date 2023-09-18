@@ -8,6 +8,7 @@ Simple compass-only marine autopilot that functions like a Raymarine ST2000 or s
 Stable on ESP32. Software support for IBT-2 motor controller, IR remote receiver, red button to toggle steering on/off, LSM303 9DOF compass, and 16x2 LCD. Rudder feedback potentiometer optional.
 If using Wifi, pilot is operational with only ESP32, IMU compass, motor controller, and motor. 
 WIFI control of the pilot accessible by connecting a device to the pilot's SSID and directing browser to 192.168.4.1.
+The WIFI interface allows adjustment of PID settings and magnetic variation. 
 
 **Version Notes:**
 --created rudder position gauge that loads in the HTML interface and updates in realtime
