@@ -3,7 +3,7 @@ Arduino autopilot for ESP32. WiFi control with HTML interface (ESP32 is access p
 
 **Jeff's Arduino Autopilot Version ESP32_Wheel1.3.**
  
-Simple compass-only marine autopilot that functions like a Raymarine ST2000 or similar.
+Simple compass-only marine autopilot that functions like a Raymarine ST2000 or similar. This version is designed for a wheel. For the tiller version, see the Tiller branch of this repository. 
 
 Stable on ESP32. Software support for IBT-2 motor controller, IR remote receiver, red button to toggle steering on/off, LSM303 9DOF compass, and 16x2 LCD. Rudder feedback potentiometer optional.
 If using Wifi, pilot is operational with only ESP32, IMU compass, motor controller, and motor. 
