@@ -7,11 +7,25 @@
 
 // Import required libraries
 
+void readheading()
+{
+  StaticJsonDocument<100> doc;
+  // create an object
+  JsonObject object = doc.to<JsonObject>();
+  object["heading"] = String(heading,0) ;
+  object["rudder_position"] = String(rudder_position,0) ;
+  serializeJson(doc, jsonString); // serialize the object and save teh result to teh string variable.
+  Serial.println( jsonString ); // print the string for debugging.
+  ws.textAll(jsonString); // send the JSON object through the websocket
+  jsonString = ""; // clear the String.
+}
 
+/*
 void readheading() {           // creates the data packet that is sent to the HTML every X seconds (set in HTML code on main page)
-String headingstring = String(heading, 0);
+String headingstring = String(heading, 0);    
 ws.textAll(headingstring);
 }
+*/
 
 void notifyClients() {              // toggles the AP ON/OFF button visualization in the HTML
   ws.textAll(String(Steering_Mode));

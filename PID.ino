@@ -21,10 +21,11 @@ RUDDER_MODE
         {  
           //deadband = 2.0; 
  
-
          RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
-         if(abs(rudder_position) > Maximum_Rudder)  Rudder_Stop();
-          
+         if(abs(rudder_position) > Maximum_Rudder)  {
+           Rudder_Stop();
+         }
+         
         if(!DODGE_MODE) // if anything other than dodge mode, i.e., if steering
         { 
            // if keypad "1" was pushed Steering_Mode = 1 (compass steer) and heading_to_steer was set to the then current heading  
@@ -125,7 +126,7 @@ RUDDER_MODE
 /************************ Rudder Control **********************************************/
         void Rudder_Control()
         {
-         int motorspeed_min = 30;
+         //int motorspeed_min = 100;
          float Rudder_Power_coeff = 0.5;  //  Set to 0 to not use. Use .5 for default starting point.applies more motor speed proportional to rudder position to have more force to increase rudder at
              // bigger rudder angles to counter weather helm. At bigger rudder positions it takes more force to increase rudder
               
@@ -196,6 +197,11 @@ RUDDER_MODE
                            Left_Rudder();
                          }  
   
+         //  RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
+                      //if(abs(rudder_position) > Maximum_Rudder)  
+                       // {
+                       //     Rudder_Stop();
+                        //}
 
 //-------------------------   WHEEL STOP USING CURRENT SENSE IN IBT-2   -----------------------------------
 
@@ -222,14 +228,15 @@ RUDDER_MODE
   {
      float rudder_position_max = 45;
      float rudder_position_min = -45;
-     float counts_max = 4096;  // from calibration in print statement
-     float counts_at_zero = 2048;
+     float counts_max = 827;  // from calibration in print statement
+     float counts_at_zero = 415;
      float counts_min = 0;
      float counts;
      
+     
      counts = analogRead(Rudder_Pin);  // rudder potentiometer pin input
-     Serial.print("Rudder pin = "); // use these print lines to get counts for calibration
-     Serial.println(counts);
+     //Serial.print("Rudder pin = "); // use these print lines to get counts for calibration
+     //Serial.println(counts);
 
       if(counts >= counts_at_zero) // linear calibration from zero
       {
@@ -239,12 +246,15 @@ RUDDER_MODE
       {
           rudder_position = rudder_position_min * (counts - counts_at_zero) / (counts_min - counts_at_zero);
       }
-      //rudder_position = - rudder_position;  // teporary reverse direction of positive rudder position
+
+
+      rudder_position = - rudder_position;  // reverse direction of positive rudder position for Jeff's setup. 
     
     // rudder_position =map(rudder_position, 187,910,-45,45); 
      
-     Serial.print("rudder angle, "); Serial.println(rudder_position);
+     //Serial.print("rudder angle, "); Serial.println(rudder_position);
     
+
   }  // END VOID RUDDER POSITION
    
 

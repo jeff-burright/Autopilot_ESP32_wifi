@@ -48,8 +48,8 @@ void JNE_AP_Compass_Correction()
 #if Compass == 0 
   MAG_Heading_Degrees = ToDeg(MAG_Heading);  // coding below here is JNE
   // AVG_Heading = 0.9*AVG_Heading + .1*MAG_Heading ; // low pass filter
-   heading = ToDeg(yaw); // using YAW  use varible heading becuse that is what is used in PID
-   // heading = MAG_Heading_Degrees;  using direct compass heading
+   //heading = ToDeg(yaw); // using YAW  use varible heading becuse that is what is used in PID. Jeff commented out 9/15/23
+    heading = MAG_Heading_Degrees;  // using direct compass heading (jeff commented in 9/15/23)
    //heading = ToDeg(AVG_Heading);  // using low pass filtered compass heading
 #endif
    

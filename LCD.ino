@@ -18,27 +18,45 @@ void LCD(){
 
     // Jeff commented back in
     lcd.setCursor(0, 1);
-     lcd.print("HDG        ");
+     lcd.print("HDG    ");
      lcd.setCursor(4, 1);
      lcd.print(heading,0);
       
 
      if(Steering_Mode != 4)
      {   
-       lcd.setCursor(8, 1);   
-       lcd.print("HTS      ");
+       lcd.setCursor(9, 1);   
+       lcd.print("CRS    ");
        lcd.setCursor(13, 1);
-       lcd.print(heading_to_steer,1);
+       lcd.print(heading_to_steer,0);
 
      }
      
-    
+    // Display whether the wheel is right or left of center
+
+    if(rudder_position > 0)
+{
+  rudd_dir = "L";
+}
+
+else if (rudder_position < 0)
+{
+  rudd_dir = "R"; 
+}
+
+else
+{
+  rudd_dir = "C";
+}
+
      if( RUDDER_MODE == 0)  // IF THERE IS A RUDDER POSITION INDICATOR
     {
-     lcd.setCursor(5,3);
-     lcd.print("Rud    "); // extra spaces clear old data
-     lcd.setCursor(9,3);
-     lcd.print(rudder_position,0);
+     lcd.setCursor(9,0);
+     lcd.print("RUD    "); // extra spaces clear old data
+     lcd.setCursor(13,0);
+     lcd.print(rudd_dir);
+     lcd.setCursor(14,0);
+     lcd.print(abs(rudder_position),0);
     }
    
  //   if(MSG >0) // MSG  0 is null otherwise print message here
