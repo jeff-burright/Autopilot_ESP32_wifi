@@ -1,4 +1,5 @@
-**The Plot Device. ESP32 Wheel/Tiller Autopilot, Version 1.3  (with parts list and build info!).**
+**The Plot Device. 
+ESP32 Wheel/Tiller Autopilot, Version 1.3  (with parts list and build info!).**
 
 Arduino autopilot for ESP32. WiFi control with HTML interface (ESP32 is access point). Also has IR remote and toggle button control. Based on the arduino autopilot built by Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot).
 
