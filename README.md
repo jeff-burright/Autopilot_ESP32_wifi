@@ -1,5 +1,5 @@
 **The Plot Device. 
-ESP32 Wheel/Tiller Autopilot, Version 1.3  (with parts list and build info!).**
+ESP32 Wheel/Tiller Autopilot, Version 1.4  (with parts list and build info!).**
 
 Arduino autopilot for ESP32. WiFi control with HTML interface (ESP32 is access point). Also has IR remote and toggle button control. Based on the arduino autopilot built by Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot).
 
@@ -35,9 +35,9 @@ double check PID settings and set optimal defaults and adjustment increments.
 **INSTALLATION NOTES**
 Check out the parts list document file within this repo for part links/costs, general build instructions, wiring pinouts, and photos of my two installations on wheel and tiller. Note also the list of libraries that need to be installed within the Arduino IDE software before you will be able to successfully compile the code. 
 
-The build folder has a binary that can be directly uploaded to an ESP32 without the libraries. If you change the code and try to recompile, even with all the right libraries, it may not load the UI webpage. The HTML file was bugging out because the ESPAsyncWebServer library uses % to mark placholder text (like for settings and heading information), but the css stylesheet for the rudder gauge also uses % for its normal meaning. If you want to edit the code for your own purposes rather than just upload my binary, you will need to follow the instructions on this page for changing all the % placeholders to $ within your version of the ESPAsyncWebServer library: https://stackoverflow.com/questions/74649351/espasyncwebserver-request-send-p-problem. 
+The build folder in this repo has a ~900kb binary that can be directly uploaded to an ESP32 without having to install all the libraries. You will need to have the Arduino IDE or other ESP32 uploading software on your computer to upload the binary the first time via a USB cable (remember to hold down the boot button on the ESP while it's uploading or else it will fail). If you want to change the code for your own purposes and try to recompile, first you will need to find all the libraries. Even with all the right libraries and a successful compile/upload, the UI webpage will not load without one additional tweak. The HTML file was bugging out because the ESPAsyncWebServer library uses % to mark placholder text (like for settings and heading information), but the css stylesheet for the rudder gauge also uses % for its normal meaning. If you want to edit the code for your own purposes rather than just upload my binary, you will need to follow the instructions on this page for changing all the % placeholders to $ within the WebResponseImpl.h file in your version of the ESPAsyncWebServer library: https://stackoverflow.com/questions/74649351/espasyncwebserver-request-send-p-problem. 
 
-As an alternative, the HTML and CSS files can be moved onto the SPI Flash of the ESP32 via the SPIFFS function. The file system uploader for ESP32 is currently not working in the Arduino IDE, so unfortunately you will need to install VS.Code and PlatformIO in order to upload the index.html file into the device. (tutorial here: https://randomnerdtutorials.com/esp32-vs-code-platformio-spiffs/). I did this before discovering the library bug.
+As an alternative, the HTML and CSS files can be moved onto the SPI Flash of the ESP32 via the SPIFFS function. The file system uploader for ESP32 is currently not working in the Arduino IDE, so unfortunately you would need to install VS.Code and PlatformIO in order to upload the index.html file into the device. (tutorial here: https://randomnerdtutorials.com/esp32-vs-code-platformio-spiffs/). I did this before discovering and fixing the % library bug for Version 1.4.
 
 
 
