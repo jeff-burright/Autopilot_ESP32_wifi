@@ -33,11 +33,12 @@ double check PID settings and set optimal defaults and adjustment increments.
 
 
 **INSTALLATION NOTES**
-Check out the parts list document file within this repo for part links/costs, general build instructions, wiring pinouts, and photos of my two installations on wheel and tiller. 
+Check out the parts list document file within this repo for part links/costs, general build instructions, wiring pinouts, and photos of my two installations on wheel and tiller. Note also the list of libraries that need to be installed within the Arduino IDE software before you will be able to successfully compile the code. 
 
-The build folder has a binary that can be directly uploaded to an ESP32, but this build DOES NOT CONTAIN THE HTML FILE. The HTML file was originally embedded directly in the sketch, but it got so long that it was bugging during uploads from the Arduino IDE and randomly not including code sections. As a result, the HTML file was moved onto the SPI Flash of the ESP32 via the SPIFFS function. The file system uploader for ESP32 is currently not working in the Arduino IDE, so unfortunately you will need to install VS.Code and PlatformIO in order to upload the index.html file into the device. (tutorial here: https://randomnerdtutorials.com/esp32-vs-code-platformio-spiffs/)
+The build folder has a binary that can be directly uploaded to an ESP32 without the libraries. If you change the code and try to recompile, even with all the right libraries, it may not load the UI webpage. The HTML file was bugging out because the ESPAsyncWebServer library uses % to mark placholder text (like for settings and heading information), but the css stylesheet for the rudder gauge also uses % for its normal meaning. If you want to edit the code for your own purposes rather than just upload my binary, you will need to follow the instructions on this page for changing all the % placeholders to $ within your version of the ESPAsyncWebServer library: https://stackoverflow.com/questions/74649351/espasyncwebserver-request-send-p-problem. 
 
-You are welcome to move the HTML back into the main sketch for easier updating, and you can look at the tiller version of the main .INO file to see how that is accomplished.
+As an alternative, the HTML and CSS files can be moved onto the SPI Flash of the ESP32 via the SPIFFS function. The file system uploader for ESP32 is currently not working in the Arduino IDE, so unfortunately you will need to install VS.Code and PlatformIO in order to upload the index.html file into the device. (tutorial here: https://randomnerdtutorials.com/esp32-vs-code-platformio-spiffs/). I did this before discovering the library bug.
+
 
 
 Use at your own risk and good luck! 
