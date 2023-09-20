@@ -1,7 +1,7 @@
 **The Plot Device. 
 ESP32 Wheel/Tiller Autopilot, Version 1.4  (with parts list and build info!).**
 
-Arduino autopilot for ESP32 with integral compass. Fast WiFi control and realtime heading/rudder readings via an HTML interface from any device with a browser (no app or internet needed). You can also build a physical control box with buttons and an LCD screen, or use a small infrared remote for line of sight control to a sensor. This code is based on the arduino autopilot built by Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot).
+Arduino autopilot for ESP32 with wired compass. Fast WiFi control and realtime heading/rudder readings via an HTML interface from any device with a browser (no app or internet needed). You can also build a physical control box with buttons and an LCD screen, or use a small infrared remote for line of sight control to a sensor. This code is based on the arduino autopilot built by Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot).
 
 This is a simple, inexpensive (~$150 total project cost including motor linkage), compass-only marine autopilot that functions like a Raymarine ST2000 or similar. This code version is designed for control of a wheel, similar to the CPT autopilot. For the tiller version, see the Tiller branch of this repository. The main differences are the removal of the rudder position indicator for the tiller version and the reversal of motor commands. 
 
