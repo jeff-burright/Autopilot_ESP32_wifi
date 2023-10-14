@@ -34,14 +34,16 @@ void LCD(){
      
     // Display whether the wheel is right or left of center
 
+
+
     if(rudder_position > 0)
 {
-  rudd_dir = "L";
+  rudd_dir = "R";
 }
 
 else if (rudder_position < 0)
 {
-  rudd_dir = "R"; 
+  rudd_dir = "L"; 
 }
 
 else

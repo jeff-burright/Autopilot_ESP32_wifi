@@ -29,7 +29,7 @@ void IRDECODE() {
       break;
 
          case 67: //  Remote 'Light ON'    
-lcdlightswitch();
+ lcdlight = 1;
       break;
 
          case 90: //  Remote 'Light OFF'    
@@ -163,6 +163,7 @@ else {Key0_Pressed();}
  Serial.println(heading_to_steer);
                 //notifyClients();   // send notification to web interface to update values
 }
+               
 
 void remotesub10(){ 
 
@@ -174,6 +175,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer - 10;
                  Serial.println("minus 10 deg");  
                             // notifyClients();   // send notification to web interface to update values
             
+         
 }
 
 void remoteadd10(){
@@ -185,6 +187,8 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 10;
               lcd.print(heading_to_steer,1);
                    Serial.println("plus 10 deg");
                             // notifyClients();   // send notification to web interface to update values
+
+                            
 }
 
 void remotesub1(){
@@ -196,6 +200,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer - 1;
               lcd.print(heading_to_steer,1);
                    Serial.println("minus 1 deg");
              //  notifyClients();   // send notification to web interface to update values
+           
 }
 
 
@@ -208,6 +213,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 1;
               lcd.print(heading_to_steer,1);
                    Serial.println("plus 1 deg");
               // notifyClients();   // send notification to web interface to update values
+             
 }
 
 
