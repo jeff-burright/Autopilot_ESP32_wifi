@@ -1,7 +1,7 @@
 **The Plot Device. 
 ESP32 Wheel/Tiller Autopilot, Version 1.4  (with parts list and build info!).**
 
-**See Version 1.5 for pilot control via ESP-NOW using a LilyGo T-Watch S3**
+**See the Version 1.5 branch of this repo for pilot control via ESP-NOW using a LilyGo T-Watch S3**
 
 Arduino autopilot for ESP32 with wired compass. Fast WiFi control and auto-updating heading/rudder readings via an HTML interface from any device with a browser (no app or internet needed). The code also supports a physical control box with an on/off toggle button and an LCD screen, plus a small infrared remote for line of sight control to a sensor. 
 
