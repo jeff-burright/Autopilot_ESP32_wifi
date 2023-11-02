@@ -44,5 +44,5 @@ As an alternative to tweaking the library, the HTML and CSS code can be moved ou
 Use at your own risk and good luck! 
 
 
-
+![jeff-burright/Autopilot_ESP32_wifi/](https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/AP-screenshot_v1_3.png)
 
