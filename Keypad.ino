@@ -1,12 +1,9 @@
 
-
-
 // IR Remote start. ESP32 needs an IR Receiver Module with sense wire connected to IR_Receive_Pin. Pinout is changeable.
 
 void IRREMOTE()  { 
   
   if (IrReceiver.decode()){   
-
  //Serial.println(IrReceiver.decodedIRData.address); 
   //Serial.println(IrReceiver.decodedIRData.command);
 
@@ -29,7 +26,7 @@ void IRDECODE() {
       break;
 
          case 67: //  Remote 'Light ON'    
-lcdlightswitch();
+ lcdlight = 1;
       break;
 
          case 90: //  Remote 'Light OFF'    
@@ -46,7 +43,6 @@ remotesub10();
          case 9: //  Remote '+10'    
 remoteadd10();
       break;
-
 
          case 22: //  Remote '-1`'    
      remotesub1();
@@ -70,16 +66,12 @@ break;
 default: break;
 
          } 
-
 }
 
 
- /****************************************************/
-// End void KeyPressed
+ 
 
-/************************************************************************/
-
-
+///////////////////////////////////////////////////
 /***********************************************/
 
         void Key0_Pressed()   // Deactivate steering
@@ -101,11 +93,7 @@ default: break;
         #endif  
           LCD();
           lcd.setCursor(0,0);
-          lcd.print("STANDBY ");
-          //lcd.setCursor(0,3);
-          // lcd.print(Mode);  
-
-          
+          lcd.print("STANDBY ");       
      
         }  // end Key0 pressed
 
@@ -132,17 +120,6 @@ void Key1_Pressed()    // Activate steering and hold course
             
              lcd.setCursor(0,0);
           lcd.print("STEERING");
-
-        //  lcd.setCursor(0,3);
-          //lcd.print("          ");
-          //lcd.setCursor(0,3);
-          //lcd.print(Mode);
-
-        //  lcd.setCursor(6, 0);
-        //  lcd.print('Autopilot ON');
-
-          //lcd.setCursor(12, 2);
-          //lcd.print(heading_to_steer,1);
      
 }  // end key1 pressed
 
@@ -150,10 +127,8 @@ void Key1_Pressed()    // Activate steering and hold course
  void redbutton(){    // Toggle between steering activate/deactivate using physical button at Button_Pin
    debouncer.update(); // Update the Bounce instance
    if ( debouncer.fell() ) {  
-//if (Steering_Mode==0){Key1_Pressed();}
-//else {Key0_Pressed();}
-toggleAP(); 
-}
+            toggleAP(); 
+          }
  }
 
 void toggleAP(){  // Toggle between steering activate/deactivate
@@ -163,6 +138,7 @@ else {Key0_Pressed();}
  Serial.println(heading_to_steer);
                 //notifyClients();   // send notification to web interface to update values
 }
+               
 
 void remotesub10(){ 
 
@@ -172,8 +148,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer - 10;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                  Serial.println("minus 10 deg");  
-                            // notifyClients();   // send notification to web interface to update values
-            
+                            // notifyClients();   // send notification to web interface to update values        
 }
 
 void remoteadd10(){
@@ -185,6 +160,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 10;
               lcd.print(heading_to_steer,1);
                    Serial.println("plus 10 deg");
                             // notifyClients();   // send notification to web interface to update values
+                           
 }
 
 void remotesub1(){
@@ -195,9 +171,8 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer - 1;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                    Serial.println("minus 1 deg");
-             //  notifyClients();   // send notification to web interface to update values
+             //  notifyClients();   // send notification to web interface to update value          
 }
-
 
 void remoteadd1(){
 
@@ -207,7 +182,7 @@ if(Steering_Mode==1) heading_to_steer = heading_to_steer + 1;
               lcd.setCursor(13, 1);
               lcd.print(heading_to_steer,1);
                    Serial.println("plus 1 deg");
-              // notifyClients();   // send notification to web interface to update values
+              // notifyClients();   // send notification to web interface to update values           
 }
 
 
@@ -338,14 +313,6 @@ void magvarup(){
 void magvardown(){
   MagVar_default = MagVar_default - 1;
 }
-
-
-
-
-
-
-
-
 
 
 

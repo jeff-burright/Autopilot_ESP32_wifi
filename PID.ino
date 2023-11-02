@@ -19,8 +19,7 @@ RUDDER_MODE
 
         void Steer_PID()
         {  
-          //deadband = 2.0; 
- 
+
          RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
          if(abs(rudder_position) > Maximum_Rudder)  {
            Rudder_Stop();
@@ -104,7 +103,6 @@ RUDDER_MODE
              heading_to_steer = 0;
            }
     
-      
          Rudder_Control(); // call Rudder for actual turning rudder
          
          if(Print_PID)
@@ -126,22 +124,20 @@ RUDDER_MODE
 /************************ Rudder Control **********************************************/
         void Rudder_Control()
         {
-         //int motorspeed_min = 100;
          float Rudder_Power_coeff = 0.5;  //  Set to 0 to not use. Use .5 for default starting point.applies more motor speed proportional to rudder position to have more force to increase rudder at
              // bigger rudder angles to counter weather helm. At bigger rudder positions it takes more force to increase rudder
               
           RUDDER_POSITION();// update rudder position  
+          
           if (RUDDER_MODE ==1) rudder_position = 0; // rudder feed back RFB not availabl  
+          
           rudder_error = rudder_command - rudder_position;
           
           if(Steering_Mode == 0 || !sw1 || !sw2)  // sw1 and sw2 need to be on for automated steering
          {
             Steering = false;
             //Rudder_Stop();
-       //   backdrive();  // experimental
-          
          }
-        
         
        // if(Steering_Mode == 1 || Steering_Mode == 2 || Steering_Mode ==3 || Steering_Mode == 5) Steering = true; // could use if Steering_Mode >0
        if(Steering_Mode >0) Steering = true;
@@ -153,9 +149,9 @@ RUDDER_MODE
           if(Steering)
           {   
 
-              //motorspeed variable tells motor controller PWM how high to be 0-255.
+      //motorspeed variable tells motor controller PWM how high to be 0-255.
         motorspeed = motorspeedMAX/ 30 *rudder_error; // where at 30 degree rudder error speed = MAX. 
-        motorspeed = abs(motorspeed);  
+        motorspeed = abs(motorspeed);  // make it a positive integer
 
          #if Rudder_Power_coeff > 0    //see main page for description of rudder power coefficient
           if(abs(rudder_command) > abs(rudder_position))
@@ -178,9 +174,6 @@ RUDDER_MODE
         // TACK_ON is set true for steering mode 3 when key 4 or 6 is pushed.  this sets max rudder and rudder speed to tack values 
         // when regular rudder command is less than deadband + 1, TACK_ON is turned off to revert to regular steering
  */
-// For IBT-2 Controller voltage-based wheel stop. EXPERIMENTAL. Reads CS pin fed to IS pins on IBT-2 and compares to current limit
- // current = current*0.99+analogRead(CS)*0.01;
-  // end wheel stop
 
                        if(abs(rudder_error) < deadband) 
                          {
@@ -203,26 +196,14 @@ RUDDER_MODE
                        //     Rudder_Stop();
                         //}
 
-//-------------------------   WHEEL STOP USING CURRENT SENSE IN IBT-2   -----------------------------------
-
-  
-
-    
-
-//-------------------------   END WHEEL STOP -------------------------------------------------
-
-
-
             } // end  if Steering 
         }  // end if(!DODGE_MODE)          
         }  // void rudder control
 
       
-
-
-
-
+///////////////////////////////////////////////////////////////////////
   //------------------------  RUDDER POSITION  -----------------------
+///////////////////////////////////////////////////////////////////////
 
   void RUDDER_POSITION()
   {
@@ -247,37 +228,10 @@ RUDDER_MODE
           rudder_position = rudder_position_min * (counts - counts_at_zero) / (counts_min - counts_at_zero);
       }
 
-
-      rudder_position = - rudder_position;  // reverse direction of positive rudder position for Jeff's setup. 
-    
-    // rudder_position =map(rudder_position, 187,910,-45,45); 
-     
-     //Serial.print("rudder angle, "); Serial.println(rudder_position);
-    
+      rudder_position = - rudder_position;  // reverse direction of positive rudder position for Jeff's setup.  
 
   }  // END VOID RUDDER POSITION
-   
 
-
-   /*  OLD RUDDER POSITION USING TIMING 
-    float rudder_rate = .015; // deg/millisec
-    int rudder_delta_time;
-    int rudder_time;
-    static float rudder_change; 
-    
-    if(rudder_on)
-    {
-      rudder_time = millis();
-      rudder_delta_time = rudder_time - rudder_time_old;
-      rudder_total_time = rudder_total_time + float(rudder_delta_time)/1000;  // diagnostic to see how much rudder motor is on can be commented out
-      rudder_change = float(rudder_delta_time) * rudder_rate * rudder_direction; //time in milliseconds, change in deg 
-      rudder_time_old = rudder_time;
-      rudder_position = rudder_position + rudder_change;
-    }
-     if(abs(rudder_position) > rudder_MAX) Rudder_Stop();
-   */  // END OLD RUDDER ROSITION USING TIMING  
-    
-   
   // ----------------------  END RUDDER POSITION --------------------
     
 
@@ -306,8 +260,6 @@ RUDDER_MODE
 ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
 ledcWrite(8, 0);
 
-//motorController.Stop();   // library may be bugged
-
    #endif  
   //  rudder_stop_time = millis();
       rudder_on = false; 
@@ -329,25 +281,9 @@ ledcWrite(8, 0);
      
      #if Motor_Controller == 3   // IBT-2 selected
 
-//motorController.TurnLeft(motorspeed);
-
 ledcWrite(8, 0);
 ledcWrite(7, motorspeed);    // changing to ledcwrite for ESP32 PWM
 
-
-// --------------voltage-based wheel stop - experimental
-/*
-if(end_left || current > max_current){     
-      Serial.print(current);
-      Serial.println(" current too high end_left reached");
-      end_left = true;
-      Rudder_Stop();
-      return;
-    }
-     if(end_right && motorspeed>0)end_right = false; //if we were at the right end, and now turning left  again, than end_right is false; 
-     Right_Rudder();
-     */
-// ------------------ end wheel stop
      #endif
      
    // if(Print_Motor_Commands)
@@ -373,25 +309,8 @@ if(end_left || current > max_current){
      
      #if Motor_Controller == 3   // IBT-2 selected
 
-//motorController.TurnRight(motorspeed);
-
 ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
 ledcWrite(8, motorspeed);
-
-
-
-// voltage wheel stop
-/*
-if(end_right || current > max_current){
-      Serial.println("current too high end_right reached");
-      end_right = true;      
-      Rudder_Stop();
-      return;
-    }
-    if(end_left && motorspeed>0)end_left = false; 
-Left_Rudder();
-*/
-// end voltage wheel stop
 
      #endif
     
@@ -414,30 +333,6 @@ Left_Rudder();
  /*************************************************************************************/   
  
  
-/*
-void backdrive()
-{
-  analogRead(L_IS);
-  analogRead(R_IS);
-
-  #if L_IS != 0
-
-  motorspeed = L_IS / 16
-  Left_Rudder();
-
-  #endif
-
-  #if R_IS != 0
-
-  motorspeed = R_IS / 16
-  Right_Rudder();
-
-#endif
-
-
-}
-
-*/
 
  
  /*************************************************************************************/
@@ -445,7 +340,7 @@ void backdrive()
      void Tracking_Error()
   {
     /*  tracking error is difference between course over ground and compass heading.
-        It's purpose is to compensate for lack of accuracy in heading sensor. It also
+        Its purpose is to compensate for lack of accuracy in heading sensor. It also
         corrects drift or anything else that causes a deviation betweeen the direction the boat 
         is travelling and the direction the compass says it is pointing.  The results are low pass
         filtered to provide a time averaged result that will not change abruptly wwhen going to a new course

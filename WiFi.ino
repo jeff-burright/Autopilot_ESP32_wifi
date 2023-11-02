@@ -5,7 +5,104 @@
   copies or substantial portions of the Software.
 *********/
 
-// Import required libraries
+
+#if smartwatch == 1   //if using smartwatch control, this sets up the ESP-NOW communication
+
+void espnowsetup(){
+
+  if ( esp_now_init() != ESP_OK ) {
+    Serial.println("Error initializing ESP-NOW");
+    return;
+  }
+
+  // Once ESPNow is successfully Init, we will register for Send CB to
+  // get the status of Trasnmitted packet
+  esp_now_register_send_cb(OnDataSent);
+  
+  // Register for a callback function that will be called when data is received
+  esp_now_register_recv_cb(OnDataRecv);
+
+  // Register peer
+  memcpy(peerInfo.peer_addr, broadcastAddress, 6);
+  peerInfo.channel = 0;  
+  peerInfo.encrypt = false;
+  
+  // Add peer        
+  if (esp_now_add_peer(&peerInfo) != ESP_OK){
+    Serial.println("Failed to add peer");
+    return;
+  } 
+}
+
+// ESP-NOW Callback when data is sent
+void OnDataSent(const uint8_t *broadcastAddress, esp_now_send_status_t status) {
+//void OnDataSent(const uint8_t *broadcastAddress, esp_now_send_status_t status) {
+  Serial.print("\r\nLast Packet Send Status:\t");
+  Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
+  if (status ==0){
+    success = "Delivery Success :)";
+  }
+  else{
+    success = "Delivery Fail :(";
+  }
+}
+
+// ESP-NOW Callback when data is received
+void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+  memcpy(&APCommand, incomingData, sizeof(APCommand));
+  Serial.print("Bytes received: ");
+  Serial.println(len);
+  
+  Serial.println(APCommand.doit);
+incomingCommand = APCommand.doit;
+
+espnowhandler();
+
+ esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *) &incomingReadings, sizeof(incomingReadings));
+
+}
+
+void espnowhandler(){
+ // #if ( requestHTS == 1 )
+ 
+ //Serial.println(incomingCommand);
+
+       switch(APCommand.doit){     
+         case 1: //  Toggle   
+      toggleAP();
+      break;
+
+         case 2: //  
+      remoteadd1();
+      break;
+
+               case 3: //    
+      remotesub1();
+      break;
+
+               case 4: //     
+      remoteadd10();
+      break;
+
+               case 5: //      
+      remotesub10();
+      break;
+
+      case 6:
+      break;
+
+      default: break;
+       }
+
+  //bounce back a response to the watch upon data receipt
+//incomingReadings.HDG = 8;
+HTSout = heading_to_steer;
+incomingReadings.HTS = HTSout;   // need to make whole integer?
+if (Steering_Mode == 1) incomingReadings.STATE = 1;
+else incomingReadings.STATE = 0;
+
+}
+#endif  // end smartwatch ESP-NOW commands
 
 void readheading()
 {
@@ -15,23 +112,18 @@ void readheading()
   object["heading"] = String(heading,0) ;
   object["rudder_position"] = String(rudder_position,0) ;
   serializeJson(doc, jsonString); // serialize the object and save teh result to teh string variable.
-  Serial.println( jsonString ); // print the string for debugging.
+  //Serial.println( jsonString ); // print the string for debugging.
   ws.textAll(jsonString); // send the JSON object through the websocket
   jsonString = ""; // clear the String.
 }
 
-/*
-void readheading() {           // creates the data packet that is sent to the HTML every X seconds (set in HTML code on main page)
-String headingstring = String(heading, 0);    
-ws.textAll(headingstring);
-}
-*/
 
 void notifyClients() {              // toggles the AP ON/OFF button visualization in the HTML
   ws.textAll(String(Steering_Mode));
 //  ws.textAll(String(heading));
 
 }
+
 
 // remote control commands from HTML interface websocket inputs to ESP32 
 void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
