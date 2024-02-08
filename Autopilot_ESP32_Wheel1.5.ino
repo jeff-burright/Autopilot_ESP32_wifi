@@ -27,6 +27,10 @@ Use this code at your own risk.
  // #include <LiquidCrystal.h>
   #include <LiquidCrystal_I2C.h>
   #include <Wire.h>
+
+    //   #include <Adafruit_GFX.h> // for small LED screen
+     //  #include <Adafruit_SSD1306.h>  // for small LED screen
+
 #include <Bounce2.h> // use for red button toggle pilot on/off
   #include <L3G.h> // IMU compass
 #include <BTS7960.h> // IBT-2 motor controller library
@@ -40,7 +44,7 @@ Use this code at your own risk.
 #include <ArduinoJson.h> // Include ArduinoJson Library
 //#include <SPIFFS.h> // for putting html and css in the flash
 #include <esp_now.h>  //for smartwatch UI
-#include <esp_wifi.h> // for smartwatch UI
+//#include <esp_wifi.h> // for smartwatch UI
 
 
 // Replace with your WIFI network credentials. Point control device browser to 192.168.4.1
@@ -68,8 +72,15 @@ String jsonString; // place to store heading and rudder data for web socket
  // Rudder direction for LCD. Value is set in PID tab. 
  String rudd_dir;
 
+// LED display
+ //#define SCREEN_WIDTH 128
+// #define SCREEN_HEIGHT 64
+ //#define SCREEN_ADDRESS 0x3D
+// Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+
+
  // PID function
- 
  float K_overall = 2;
  float K_heading = .4;
  float K_differential = 2;
@@ -102,6 +113,7 @@ String jsonString; // place to store heading and rudder data for web socket
  boolean Print_heading  = 0 ; // diagnostic serial print heading, interval set in A_P_loop
  boolean Print_LCD_IMU9 = 0;  //prints Head, Pitch, Roll, Yaw on LCD conflicts with other LCD Prints
  boolean Print_LCD_AP = 1; // prints main A/P LCD output data and Menus, only do one of these at a time
+ //boolean Print_LED_AP = 1;  // added for LED display
  boolean Print_Gyro = 0; //  Prints LCD and Serial scaled X(roll), Y(pitch), Z(Yaw) deg/sec
  boolean Print_PID = 0;
  boolean Print_UTC = 0;
@@ -788,7 +800,7 @@ color: #BABABA;
 
 
 setInterval(function() {
-    // Call a function repetatively with 5 Second interval
+    // Call a function repetatively with X Second interval
     getData();
   }, 1000); //1 Seconds update rate
   
@@ -1056,6 +1068,14 @@ setInterval(function() {
      delay(1000); // give chip some warmup on powering up   
      Serial.println("Let's go somewhere");
 
+//LED display setup
+     //   Wire.begin();
+    //       display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+      //     display.display();
+      //     delay(2000);  // Wait for display to initialize (optional)
+      //     display.clearDisplay();
+
+
 // Red Button setup     
 debouncer.attach(BUTTON_PIN,INPUT_PULLUP); // Attach the debouncer to a pin with INPUT_PULLUP mode
 debouncer.interval(25); // Use a debounce interval of 25 milliseconds
@@ -1088,10 +1108,11 @@ ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise 
   WiFi.mode(WIFI_AP_STA);
 
 // Set wifi mode to BGNLR
-  esp_wifi_set_protocol(WIFI_IF_AP, WIFI_PROTOCOL_11B| WIFI_PROTOCOL_11G|WIFI_PROTOCOL_11N|WIFI_PROTOCOL_LR);
-   esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_11B| WIFI_PROTOCOL_11G|WIFI_PROTOCOL_11N|WIFI_PROTOCOL_LR);
+
+ // esp_wifi_set_protocol(WIFI_IF_AP, WIFI_PROTOCOL_11B| WIFI_PROTOCOL_11G|WIFI_PROTOCOL_11N|WIFI_PROTOCOL_LR);
+  // esp_wifi_set_protocol(WIFI_IF_STA, WIFI_PROTOCOL_11B| WIFI_PROTOCOL_11G|WIFI_PROTOCOL_11N|WIFI_PROTOCOL_LR);
   
-  esp_wifi_set_ps(WIFI_PS_NONE);  // experimental
+ // esp_wifi_set_ps(WIFI_PS_NONE);  // experimental
 
     // ESP32 Board add-on after version > 1.0.5
  // esp_wifi_set_mac(WIFI_IF_STA, &newMACAddress[0]);
@@ -1101,9 +1122,9 @@ ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise 
   //while (WiFi.status() != WL_CONNECTED) {
   //  delay(1000);
 
-esp_wifi_set_promiscuous(true);
-esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
-esp_wifi_set_promiscuous(false);
+//esp_wifi_set_promiscuous(true);
+//esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
+//esp_wifi_set_promiscuous(false);
 
 //Serial.println("Wifi Channel ");
 //Serial.println(WiFi.channel);
