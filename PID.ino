@@ -19,7 +19,7 @@ RUDDER_MODE
 
         void Steer_PID()
         {  
-
+          //deadband = 2.0; 
  
          RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
          if(abs(rudder_position) > Maximum_Rudder)  {
@@ -375,7 +375,7 @@ if(end_left || current > max_current){
 
 //motorController.TurnRight(motorspeed);
 
-ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM noise reduction
 ledcWrite(8, motorspeed);
 
 

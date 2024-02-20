@@ -240,13 +240,19 @@ void dodgeleft(){
          //   DODGE_MODE = true;
          //   Previous_Mode = Steering_Mode;
           //  Steering_Mode ==5;
-          Key0_Pressed();
-           motorspeed = motorspeedMAX;
-            Left_Rudder();
-            delay(500);
+
+ledcWrite(8, 0);
+ledcWrite(7, 0);
+delay(100);
+ledcWrite(8, 0);
+ledcWrite(7, 240);
+            delay(1000);
+            ledcWrite(8, 0);
+ledcWrite(7, 0);
 
   //        if(Steering_Mode == 0 || Steering_Mode ==5) return; 
-          Rudder_Stop();
+Key0_Pressed();
+
          //  DODGE_MODE = false;
          // Steering_Mode = Previous_Mode;
 }
@@ -256,11 +262,17 @@ void dodgeright(){
            // DODGE_MODE = true;
            // Previous_Mode = Steering_Mode;
            //  Steering_Mode ==5;
-          Key0_Pressed();
-           motorspeed = motorspeedMAX;
-            Right_Rudder();
-            delay(500);
-           Rudder_Stop(); 
+
+ledcWrite(8, 0);
+ledcWrite(7, 0);
+delay(100);
+ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(8, 240);
+
+            delay(1000);
+            ledcWrite(8, 0);
+ledcWrite(7, 0);
+           Key0_Pressed(); 
          // DODGE_MODE = false;
          // Steering_Mode = Previous_Mode;
           }
