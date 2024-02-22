@@ -1,9 +1,9 @@
 **The Plot Device. 
-ESP32 Wheel/Tiller Autopilot, Version 1.5  (with parts list and build info!).**
-
-Arduino autopilot for ESP32 with wired compass. Fast WiFi control and auto-updating heading/rudder readings via an HTML interface from any device with a browser (no app or internet needed). The code also supports a physical control box with an on/off toggle button and an LCD screen, plus a small infrared remote for line of sight control to a sensor. Version 1.5 added control via a Lilygo smart watch using the ESP-NOW protocol. 
+ESP32 Wheel/Tiller Autopilot, Version 1.6  (with parts list and build info!).**
 
 This is a simple, inexpensive (~$150 total project cost including motor linkage), compass-only marine autopilot that functions like a Raymarine ST2000 or similar. The main code version is designed for control of a wheel, similar to the CPT autopilot. For the tiller version, see the Tiller branch of this repository. The main differences are the removal of the rudder position indicator for the tiller version and the reversal of motor commands. 
+
+Features: Fast pilot control and auto-updating heading/rudder readings via an HTML interface from any device with wifi and a browser (no app or internet needed). The code also supports a physical control box with an on/off toggle button and an LCD screen, plus a small infrared remote for line of sight control to a sensor. Version 1.5 added control via a Lilygo smart watch using the ESP-NOW protocol. 
 
 Stable on ESP32. Software support for IBT-2 motor controller, IR remote receiver (optional), single button to toggle steering on/off (optional), LSM303 9DOF compass, 16x2 LCD (optional), and rudder feedback potentiometer (optional). The rudder feedback sensor controls the wheel stop function when it reaches a preset angle, so it is recommended for the wheel version especially. The parts list describes how you can build one for about $20.  
 
@@ -14,7 +14,7 @@ WIFI control of the pilot accessible by connecting a device to the pilot's SSID 
 Over the air firmware updates may be uploaded by connecting to the pilot's SSID and going to 192.168.4.1/update.
 
 **Version Notes:**
---fixed tilt-compensation of compass.
+--fixed tilt-compensation of compass. IMU chip must be affixed facing down.
 --created rudder position gauge that loads in the HTML interface and updates once per second.
 --adjusted motorspeedMIN from 30 to 100 for a little faster wheel response (max is 255). 
 --tweaked dodge functions to reactivate steering at new course a few seconds after dodging. Still experimenting with this. 
@@ -33,6 +33,8 @@ double check PID settings and set optimal defaults and adjustment increments.
 
 
 **INSTALLATION NOTES**
+NOTE: The compass tilt compensation for the IMU used in my build (LSM303) only works when the chip is oriented with the writing facing down.
+
 Check out the parts list document file within this repo for part links/costs, general build instructions, wiring pinouts, and photos of my two installations on wheel and tiller. Note also the list of libraries that need to be installed within the Arduino IDE software before you will be able to successfully compile the code. 
 
 The build folder in this repo has a ~900kb binary file that can be directly uploaded to an ESP32 without having to install all the libraries. You will need to have the Arduino IDE or other ESP32 uploading software on your computer to upload the binary the first time via a USB cable (remember to hold down the boot button on the ESP while it's uploading or else it will fail). If you want to change the code for your own purposes and try to recompile, first you will need to find all the libraries. Even with all the right libraries and a successful compile/upload, the UI webpage will not load without one additional tweak. The HTML file was bugging out because the ESPAsyncWebServer library uses % to mark placholder text (like for settings and heading information), but the css stylesheet for the rudder gauge also uses % for its normal meaning. If you want to edit the code for your own purposes rather than just upload my binary, you will need to follow the instructions on this page for changing all the % placeholders to $ within the WebResponseImpl.h file in your version of the ESPAsyncWebServer library: https://stackoverflow.com/questions/74649351/espasyncwebserver-request-send-p-problem. 
