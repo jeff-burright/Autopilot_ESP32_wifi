@@ -107,6 +107,7 @@
    if(Print_LCD_AP) LCD(); //This is main LCD print of GPS and Compass can be turned off to use 
    //LCD to print special purpose diagnostics
 
+//LEDdisp();
 
   // DT_test = millis() - DT_test;
   // Serial.println(DT_test);  // diagnostic to check loop timing  

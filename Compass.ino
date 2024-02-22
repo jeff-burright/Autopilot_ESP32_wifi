@@ -41,7 +41,8 @@ void Compass_Heading()
   sin_roll = sin(roll);
   cos_pitch = cos(pitch);
   sin_pitch = sin(pitch);
-  
+
+
   //added 2/20/24 to try to correct tilt compensation
 //pitch = atan2(accel_x, sqrt(pow(accel_y, 2) + pow(accel_z, 2)));
 //roll = atan2(-accel_y, accel_z);
@@ -94,6 +95,7 @@ void Compass_Heading()
   MAG_Y = c_magnetom_y*cos_roll - c_magnetom_z*sin_roll;
   // Magnetic Heading
   MAG_Heading = atan2(-MAG_Y,MAG_X);
+
 
 
 }
