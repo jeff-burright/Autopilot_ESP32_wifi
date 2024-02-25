@@ -3,7 +3,7 @@ ESP32 Wheel/Tiller Autopilot, Version 1.6  (with parts list and build info!).**
 
 This is a simple, inexpensive (~$150 total project cost including motor linkage), compass-only marine autopilot that functions like a Raymarine ST2000 or similar. The main code version is designed for control of a wheel, similar to the CPT autopilot. For the tiller version, see the Tiller branch of this repository. The main differences are the removal of the rudder position indicator for the tiller version and the reversal of motor commands. 
 
-Features: Fast pilot control and auto-updating heading/rudder readings via an HTML interface from any device with a browser (no app or internet needed). The code also supports a physical control box with an on/off toggle button and an LCD screen, plus a small infrared remote for line of sight control to a sensor. Version 1.5 added control via a Lilygo smart watch (~$40) using the ESP-NOW protocol. See my other repository for the watch code.
+**Features:** Fast pilot control and auto-updating heading/rudder readings via an HTML interface from any device with a browser (no app or internet needed). The code also supports a physical control box with an on/off toggle button and an LCD screen, plus a small infrared remote for line of sight control to a sensor. Version 1.5 added control via a Lilygo smart watch (~$40) using the ESP-NOW protocol. See my other repository for the watch code.
 
 Stable on ESP32. Software support for IBT-2 motor controller, LSM303 9DOF compass, IR remote receiver (optional), single button to toggle steering on/off (optional),  16x2 LCD (optional), and rudder feedback potentiometer (optional). The rudder feedback sensor controls the wheel stop function when it reaches a preset angle, so it is recommended for the wheel version especially. The parts list describes how you can build one for about $20.  
 
@@ -28,7 +28,7 @@ double check PID settings and set optimal defaults and adjustment increments.
 
 **Thanks to the work of Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot) from which this project grew.**
 
-Videos of the pilot in action:
+Videos of the pilot in use:
 https://www.youtube.com/watch?v=wBYxuOjN69g
 https://www.youtube.com/shorts/7anuzTAU0g8
 https://www.youtube.com/shorts/sYkNy174X3A
