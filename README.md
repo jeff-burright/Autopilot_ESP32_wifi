@@ -28,6 +28,11 @@ double check PID settings and set optimal defaults and adjustment increments.
 
 **Thanks to the work of Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot) from which this project grew.**
 
+Videos of the pilot in action:
+https://www.youtube.com/watch?v=wBYxuOjN69g
+https://www.youtube.com/shorts/7anuzTAU0g8
+https://www.youtube.com/shorts/sYkNy174X3A
+https://www.youtube.com/watch?v=WxV1NFOIDxg
 
 **INSTALLATION NOTES**
 NOTE: For tilt compensation to work, the IMU compass must be calibrated using the LSM303 library calibration example, and the XYZ min/max values must be input to lines 104-105 of the I2C tab in your version of this code. 
