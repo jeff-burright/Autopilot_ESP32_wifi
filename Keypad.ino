@@ -84,9 +84,10 @@ default: break;
           Screen = 0;  
           //toggle = false; // resets key 3 to tack mode instead of wind mode
 
-        #if Board == Arduino
+          //resets display
           lcd.begin(16,2);
-        #endif
+
+
         #if BEARINGRATE_OFFSET == 1
           bearingrate_Offset = 0; // bearingrate_Offset applied in Tab Subs void Bearing_Rate()
                                   // set with keys 1, 2, 3 maybe 22 reset to 0 in key zero

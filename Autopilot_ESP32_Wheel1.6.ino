@@ -21,17 +21,12 @@ Thanks to the work of Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_
 Use this code at your own risk. 
 */
 
- #define Arduino 0   
- #define Teensy 1
- #define Board Arduino//  0 = Arduino or  1 = Teensy
-
   #include <Keypad.h>
- // #include <LiquidCrystal.h>
   #include <LiquidCrystal_I2C.h>
   #include <Wire.h>
 
-    //   #include <Adafruit_GFX.h> // for small LED screen
-     //  #include <Adafruit_SSD1306.h>  // for small LED screen
+    //   #include <Adafruit_GFX.h> // for small LED screen. Not yet implemented.
+     //  #include <Adafruit_SSD1306.h>  // for small LED screen. Not yet implemented.
 
 #include <Bounce2.h> // use for red button toggle pilot on/off
   #include <L3G.h> // IMU compass
@@ -39,14 +34,17 @@ Use this code at your own risk.
 #include <IRremote.h> // infrared remote control
 #include <IRremote.hpp>
  #include <LSM303.h> // IMU compass
- #include <WiFi.h> 
-#include <AsyncTCP.h> 
-#include <ESPAsyncWebServer.h> 
+LSM303 compass;
+ #include <WiFi.h>  // necessary for WiFi control
+#include <AsyncTCP.h> // necessary for WiFi control
+#include <ESPAsyncWebServer.h>  // necessary for WiFi control
 #include <AsyncElegantOTA.h> // over the air update of compiled binary via 192.168.4.1/update
-#include <ArduinoJson.h> // Include ArduinoJson Library
+#include <ArduinoJson.h> // Include ArduinoJson Library. Necessary for updating heading data and rudder position gauge in the HTML
 //#include <SPIFFS.h> // for putting html and css in the flash
 #include <esp_now.h>  //for smartwatch UI
 #include <esp_wifi.h> // for smartwatch UI
+
+//#include <HTML.ino>  // hacky way to include the HTML code as a separate tab while still calling it before setup and loop
 
 
 // Replace with your WIFI network credentials. Point control device browser to 192.168.4.1
@@ -137,6 +135,7 @@ String jsonString; // place to store heading and rudder data for web socket
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
+
 //LCD screen (16x2 LCD with I2C interface chip)
 LiquidCrystal_I2C lcd(0x27,16,2); //Addr: 0x3F, 20 chars & 4 lines, for serial LCD
 long lcdtimer=0;   //LCD Print timer
@@ -191,7 +190,7 @@ float MagVar; //Magnetic Variation E is plus, W is minus
  boolean lcdlight = 0; 
 
 // ------------------ESP-NOW Parameters------------------------//
-#if smartwatch ==1
+#if smartwatch == 1
 // REPLACE WITH THE MAC Address of your receiver 
 //uint8_t peerAddress[] = {0x32, 0xAE, 0xA4, 0x07, 0x0D, 0x64};
 
@@ -288,19 +287,22 @@ int SENSOR_SIGN[9] = {1,-1,-1, -1,1,1, 1,-1,-1}; //Correct directions x,y,z - gy
 #define Gyro_Scaled_Y(x) ((x)*ToRad(Gyro_Gain_Y)) //Return the scaled ADC raw data of the gyro in radians for second
 #define Gyro_Scaled_Z(x) ((x)*ToRad(Gyro_Gain_Z)) //Return the scaled ADC raw data of the gyro in radians for second
 
+
 // LSM303 magnetometer calibration constants; use the Calibrate example from
 // the Pololu LSM303 library to find the right values for your board
-
 // this is data for LSM303 IMU compass. Values are derived from running a calibration sketch and recording the min/max after waving the compass around. 
+//NOTE 2/24/24: These values are not currently used. They are called in the Compass_Heading() function, which is not used in favor of the compass.heading() function included with the LSM303 library. 
+// 2/24/24: The cal values for your compass should be put in line 104-105 of the I2C.INO tab instead.
+
 
 //these values are for the home prototype
+  #define M_X_MIN -579   
+  #define M_Y_MIN -732
+  #define M_Z_MIN -392   
+  #define M_X_MAX 603
+  #define M_Y_MAX 414
+  #define M_Z_MAX 395 
 
-  #define M_X_MIN -573   
-  #define M_Y_MIN -679
-  #define M_Z_MIN -336   
-  #define M_X_MAX 579
-  #define M_Y_MAX 444
-  #define M_Z_MAX 435 
 
 /*
   //these values are for the actual device on the boat
@@ -333,6 +335,7 @@ float c_magnetom_x;
 float c_magnetom_y;
 float c_magnetom_z; 
 float MAG_Heading;
+float compassheading;  // experiment
 
 float Accel_Vector[3]= {0,0,0}; //Store the acceleration in a vector
 float Gyro_Vector[3]= {0,0,0};//Store the gyros turn rate in a vector
@@ -369,8 +372,11 @@ float Temporary_Matrix[3][3]={
 #endif // end if compass == 0
 /************************************/
 
-// -------------------------------WEB INTERFACE FOR WIFI CONTROL AT 192.168.4.1 --------------------
 
+
+// -------------------------------------------------------------------------------------------------
+// -------------------------------WEB INTERFACE FOR WIFI CONTROL AT 192.168.4.1 --------------------
+// -------------------------------------------------------------------------------------------------
 
 const char index_html[] PROGMEM = R"rawliteral(
 
@@ -1071,7 +1077,12 @@ setInterval(function() {
 
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
  //****  SETUP    SETUP   SETUP   ***** 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
 
  void setup() {
 
@@ -1116,7 +1127,6 @@ ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise 
  */
 
  // Connect to Wi-Fi
- // WiFi.mode(WIFI_AP_STA);
   WiFi.mode(WIFI_MODE_APSTA);
 
 // Set wifi mode to BGNLR (currently broken. SSID won't broadcast if these are active)
@@ -1148,13 +1158,11 @@ Serial.println(IP);          // default is 192.168.4.1
   
   initWebSocket();   
 
-// initialize esp-now (see WIFI tab)
-  //espnowsetup();
+#if smartwatch == 1
+// initialize esp-now for watch control (see WIFI tab)
+  espnowsetup();
+#endif
 
- /* // Route for root / web page
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send_P(200, "text/html", index_html, processor);  
-  });*/
 
   // Route for root / web page
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
@@ -1218,7 +1226,7 @@ void loop()
 
  #if Compass == 0
   if(just_started)
-  {  setup();  //this runs setup a second time because I (JE) find gyros zero state does not initialize when powered up, runs once
+  {  //setup();  //this runs setup a second time because I (JE) find gyros zero state does not initialize when powered up, runs once
      just_started = 0;
   }
  #endif 

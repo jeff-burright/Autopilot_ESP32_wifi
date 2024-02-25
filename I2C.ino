@@ -43,7 +43,7 @@ LIS3MDL mag;
 //#include <LSM303.h>
 
 L3G gyro;
-LSM303 compass;
+//LSM303 compass;
 
 #endif
 
@@ -58,7 +58,8 @@ void Gyro_Init()
 #ifdef IMU_V5
   // Accel_Init() should have already called gyro_acc.init() and enableDefault()
   gyro_acc.writeReg(LSM6::CTRL2_G, 0x4C); // 104 Hz, 2000 dps full scale
-#else
+
+#else   //this is what's currently used.
   gyro.init();
   gyro.enableDefault();
   //gyro.writeReg(L3G::CTRL_REG4, 0x20); // 2000 dps full scale
@@ -69,7 +70,7 @@ void Gyro_Init()
 
 void Read_Gyro()
 {
-#ifdef IMU_V5
+#ifdef IMU_V5 
   gyro_acc.readGyro();
 
   AN[0] = gyro_acc.g.x;
@@ -95,8 +96,14 @@ void Accel_Init()
   gyro_acc.enableDefault();
   gyro_acc.writeReg(LSM6::CTRL1_XL, 0x3C); // 52 Hz, 8 g full scale
 #else
+
   compass.init();
   compass.enableDefault();
+
+// experiment 2/24/24 using stock LSM303 library example and calibration values for my home prototype setup.
+compass.m_min = (LSM303::vector<int16_t>){-579, -732, -392};
+compass.m_max = (LSM303::vector<int16_t>){+603, +414, +395};
+
   switch (compass.getDeviceType())
   {
     case LSM303::device_D: // Pololu IMU9 V3

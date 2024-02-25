@@ -28,7 +28,7 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 
 */
 #if Compass == 0
-void Compass_Heading()
+void Compass_Heading()   // 2/24/24: currently not in use. using compass.heading() from LSM303 lib instead
 {
   float MAG_X;
   float MAG_Y;
@@ -43,60 +43,27 @@ void Compass_Heading()
   sin_pitch = sin(pitch);
 
 
-  //added 2/20/24 to try to correct tilt compensation
-//pitch = atan2(accel_x, sqrt(pow(accel_y, 2) + pow(accel_z, 2)));
-//roll = atan2(-accel_y, accel_z);
-
-/*
-  // from chatgpt
-        //added by chatgpt to make tilt compensation work regardless of imu orientation
-    //if (c_magnetom_z < 0) {
-      if (abs(roll) < PI / 2.0) {
-    magnetom_x = -magnetom_x;
-    magnetom_y = -magnetom_y;
-  }
-
-  // adjust for LSM303 compass axis offsets/sensitivity differences by scaling to +/-0.5 range
-  c_magnetom_x = (float)(magnetom_x - SENSOR_SIGN[6]*M_X_MIN) / (M_X_MAX - M_X_MIN) - SENSOR_SIGN[6]*0.5;
-  c_magnetom_y = (float)(magnetom_y - SENSOR_SIGN[7]*M_Y_MIN) / (M_Y_MAX - M_Y_MIN) - SENSOR_SIGN[7]*0.5;
-  c_magnetom_z = (float)(magnetom_z - SENSOR_SIGN[8]*M_Z_MIN) / (M_Z_MAX - M_Z_MIN) - SENSOR_SIGN[8]*0.5;
-  
-
-
-  // Tilt compensated Magnetic filed X:
-  MAG_Y = c_magnetom_x*sin_roll*sin_pitch + c_magnetom_y*cos_roll - c_magnetom_z*sin_roll*cos_pitch;
-  // Tilt compensated Magnetic filed Y:
-  MAG_X = c_magnetom_x*cos_pitch + c_magnetom_z*sin_pitch;
-  // Magnetic Heading
-  MAG_Heading = atan2(MAG_Y,MAG_X);
-
-
-*/
-
-
-    //added by chatgpt to make tilt compensation work regardless of imu orientation
+    //added by chatgpt to make tilt compensation work regardless of imu orientation. Not sure it's adding much because the IMU still only works when face-down
     //if (c_magnetom_z < 0) {
       if (abs(roll) < PI / 2.0) {
     magnetom_x = -magnetom_x;
     magnetom_y = -magnetom_y; }
 
-//original
 
   // adjust for LSM303 compass axis offsets/sensitivity differences by scaling to +/-0.5 range
   c_magnetom_x = (float)(magnetom_x - SENSOR_SIGN[6]*M_X_MIN) / (M_X_MAX - M_X_MIN) - SENSOR_SIGN[6]*0.5;
   c_magnetom_y = (float)(magnetom_y - SENSOR_SIGN[7]*M_Y_MIN) / (M_Y_MAX - M_Y_MIN) - SENSOR_SIGN[7]*0.5;
   c_magnetom_z = (float)(magnetom_z - SENSOR_SIGN[8]*M_Z_MIN) / (M_Z_MAX - M_Z_MIN) - SENSOR_SIGN[8]*0.5;
-  
 
 
   // Tilt compensated Magnetic filed X:
   MAG_X = c_magnetom_x*cos_pitch + c_magnetom_y*sin_roll*sin_pitch + c_magnetom_z*cos_roll*sin_pitch;
   // Tilt compensated Magnetic filed Y:
   MAG_Y = c_magnetom_y*cos_roll - c_magnetom_z*sin_roll;
-  // Magnetic Heading
+  
+  // Tilt-Compensated Magnetic Heading
   MAG_Heading = atan2(-MAG_Y,MAG_X);
 
-
-
 }
+
 #endif

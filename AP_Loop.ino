@@ -9,8 +9,6 @@
    // int rudder_duration = 40;  // this is time the rudder remains on each time it is turned, this slows down rudder
    static int Icount;
 
-
-
     if((millis()-timer)>=20)  // Main loop runs at 50Hz
   {
     counter++;
@@ -20,28 +18,24 @@
     
     timer=millis();
 
-
-  #if Compass == 0
     if (timer>timer_old)
       G_Dt = (timer-timer_old)/1000.0;    // Real time of loop run. We use this on the DCM algorithm (gyro integration time)
     else
       G_Dt = 0;
     
 
-
     // *** DCM algorithm
     // Data adquisition
     Read_Gyro();   // This read gyro data
     Read_Accel();     // Read I2C accelerometer
-      // Calculations...
-    Matrix_update(); 
-    Normalize();
-    Drift_correction();
-    Euler_angles();
-    Bearing_Rate();
+     
+   // Calculations...  2/24/24: moved to further down below compass readings
+      // Matrix_update();   
+      // Normalize();
+      // Drift_correction();
+      // Euler_angles();
+      //Bearing_Rate();
     
- #endif
-
 
     // read compass more often
   /*   Icount ++;  // use this block to measure milliseconds per 100 iterations
@@ -61,16 +55,29 @@
      }
     */ 
       counter=0;
-   #if Compass == 0
-      Read_Compass();    // Read I2C magnetometer
-      Compass_Heading(); // Calculate magnetic heading Pololus Mag heading 
-      JNE_AP_Compass_Correction();  // compute true heading
-       //Serial.print(heading,1); Serial.print("   "); Serial.println(bearingrate); // temporary   
-   #endif
+
+///////////////////////////////////////////
+////////// GET HEADING FUNCTION ///////////
+///////////////////////////////////////////
+
+      //Read_Compass();    // Read I2C magnetometer. commented out experiment 2/24/24
+     // Compass_Heading(); // Calculate magnetic heading Pololus Mag heading. Commented out 2/24/24 experiment
+
+      compass.read();  // 2/24/24: replaces Compass_Heading() function and just uses LSM303 lib onboard function instead
+      compassheading = compass.heading();
+      MAG_Heading = ToRad(compassheading); // allows the drift correction and yaw computation in the DCM tab. heading is pegged to yaw in the Subs tab.
+
+      Matrix_update(); 
+      Normalize();
+          Drift_correction();
+        Euler_angles();
+        Bearing_Rate();
+      JNE_AP_Compass_Correction();  // compute true heading. See Subs tab.
+       
+       //Serial.print(heading,1); Serial.print("   "); Serial.println(bearingrate); // prints heading info for testing   
 
  
-
-    Steer_PID(); 
+    Steer_PID();  // Autopilot steering function. See PID tab. 
    
    } // end if counter > 8 10 Hz loop
       

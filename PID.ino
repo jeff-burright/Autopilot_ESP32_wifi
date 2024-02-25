@@ -51,7 +51,7 @@ RUDDER_MODE
           #if Compass == 0
            differential_error = bearingrate;
           #endif
-          //NOTE if Compass == 1 (BNO055) bearing rate is calculated in that tab.  if other compasses added need to be sure bearing rate set by this point
+          
           // Serial.print(heading_error);
           // Serial.print("  ");
           // Serial.println(differential_error);          
