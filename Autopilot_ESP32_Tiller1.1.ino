@@ -36,6 +36,7 @@ Use this code at your own risk.
 #include <IRremote.h> // infrared remote control
 #include <IRremote.hpp>
  #include <LSM303.h> // IMU compass
+ LSM303 compass;
  #include <WiFi.h> 
 #include <AsyncTCP.h> 
 #include <ESPAsyncWebServer.h> 
@@ -304,6 +305,7 @@ float c_magnetom_x;
 float c_magnetom_y;
 float c_magnetom_z; 
 float MAG_Heading;
+float compassheading;  // experiment
 
 float Accel_Vector[3]= {0,0,0}; //Store the acceleration in a vector
 float Gyro_Vector[3]= {0,0,0};//Store the gyros turn rate in a vector
@@ -873,6 +875,13 @@ ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise 
 
 
 // ------------------------------    WIFI setup   ------------------------------------------
+
+
+//smartwatch setup
+#if smartwatch == 1
+espnowsetup();
+#endif
+
  // Connect to Wi-Fi
   WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);  //changed from WiFi.begin to WiFi.softAP to create access point for phone to connect (no internet passthrough).

@@ -14,7 +14,6 @@ IRDECODE();
 delay(300);
  IrReceiver.resume();
 }
-
 }
 
 void IRDECODE() {
@@ -75,7 +74,7 @@ default: break;
 
 
  /****************************************************/
-// End void KeyPressed
+// End void IRRemote
 
 /************************************************************************/
 

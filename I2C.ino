@@ -43,7 +43,7 @@ LIS3MDL mag;
 //#include <LSM303.h>
 
 L3G gyro;
-LSM303 compass;
+//LSM303 compass;
 
 #endif
 
@@ -97,6 +97,15 @@ void Accel_Init()
 #else
   compass.init();
   compass.enableDefault();
+
+
+
+// experiment 2/24/24 CALIBRATION VALUES. using stock LSM303 library example 
+compass.m_min = (LSM303::vector<int16_t>){-663, -683, -611};
+compass.m_max = (LSM303::vector<int16_t>){+453, +427, +460};
+
+
+
   switch (compass.getDeviceType())
   {
     case LSM303::device_D: // Pololu IMU9 V3
