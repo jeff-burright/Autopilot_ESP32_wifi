@@ -56,6 +56,7 @@ String jsonString; // place to store heading and rudder data for web socket
 /******       USER INPUT       ********/
 
 #define Compass 0 //  0 for Pololu, 1 for BNO055
+#define LSMLib 0 // switches between using LSM303 library for tilt compensation vs. the original magnetom-based code. 1 uses LSM library, 0 uses Compass_Heading() algo.
 #define IMU 2 // Used to select Pololu IMUs Versions and calibration set. 
     //Allowed values: 2 IMU9 V2; 93 (jacksIMU9V3); 103 (jacks IMU10V3; 51 (Jacks IMU9V5 #1); 52 (Jacks IMU9 V5 #2)
     //determines which set of calibration data is used these extra versions were added to code 7/11/17 J14.4
@@ -294,7 +295,7 @@ int SENSOR_SIGN[9] = {1,-1,-1, -1,1,1, 1,-1,-1}; //Correct directions x,y,z - gy
 //NOTE 2/24/24: These values are not currently used. They are called in the Compass_Heading() function, which is not used in favor of the compass.heading() function included with the LSM303 library. 
 // 2/24/24: The cal values for your compass should be put in line 104-105 of the I2C.INO tab instead.
 
-
+#if LSMLib == 0
 //these values are for the home prototype
   #define M_X_MIN -579   
   #define M_Y_MIN -732
@@ -313,6 +314,7 @@ int SENSOR_SIGN[9] = {1,-1,-1, -1,1,1, 1,-1,-1}; //Correct directions x,y,z - gy
   #define M_Y_MAX 427
   #define M_Z_MAX 460 
 */
+#endif  // end #if LSMLib
 
 #define Kp_ROLLPITCH 0.02
 #define Ki_ROLLPITCH 0.00002

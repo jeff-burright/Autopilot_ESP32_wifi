@@ -28,6 +28,7 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 
 */
 #if Compass == 0
+
 void Compass_Heading()   // 2/24/24: currently not in use. using compass.heading() from LSM303 lib instead
 {
   float MAG_X;
@@ -67,3 +68,4 @@ void Compass_Heading()   // 2/24/24: currently not in use. using compass.heading
 }
 
 #endif
+

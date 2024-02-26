@@ -90,10 +90,11 @@ void Drift_correction(void)
   mag_heading_x = cos(MAG_Heading);  // pulls mag values out of compass.read() function for purposes of calculating yaw
   mag_heading_y = sin(MAG_Heading);
 
-
+#if LSMLib == 1
       if (abs(roll) < PI / 2.0) {   // 2/24/24: maintains tilt compensation if IMU upside down
         mag_heading_x = -mag_heading_x;
         mag_heading_y = -mag_heading_y; }
+#endif
 
   errorCourse=(DCM_Matrix[0][0]*mag_heading_y) - (DCM_Matrix[1][0]*mag_heading_x);  //Calculating YAW error
   Vector_Scale(errorYaw,&DCM_Matrix[2][0],errorCourse); //Applys the yaw correction to the XYZ rotation of the aircraft, depeding the position.
