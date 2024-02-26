@@ -53,6 +53,7 @@ const char* password = "";
 /******       USER INPUT       ********/
 
 #define Compass 0 //  0 for Pololu, 1 for BNO055
+#define LSMLib 0 // 0 to use original tilt compensation function in Compass_Heading(). 1 to use the LSM303 library method of tilt compensation, plus gyro drift correction.
 #define IMU 2 // Used to select Pololu IMUs Versions and calibration set. 
     //Allowed values: 2 IMU9 V2; 93 (jacksIMU9V3); 103 (jacks IMU10V3; 51 (Jacks IMU9V5 #1); 52 (Jacks IMU9 V5 #2)
     //determines which set of calibration data is used these extra versions were added to code 7/11/17 J14.4
@@ -274,6 +275,7 @@ int SENSOR_SIGN[9] = {1,-1,-1, -1,1,1, 1,-1,-1}; //Correct directions x,y,z - gy
 // the Pololu LSM303 library to find the right values for your board
 
 // this is data for LSM303,
+#if LSMLib == 0
 #if IMU == 2 // Jack's version 2 IMU calibration 
 
   #define M_X_MIN -663   
@@ -282,6 +284,7 @@ int SENSOR_SIGN[9] = {1,-1,-1, -1,1,1, 1,-1,-1}; //Correct directions x,y,z - gy
   #define M_X_MAX 453
   #define M_Y_MAX 427
   #define M_Z_MAX 460 
+#endif
 #endif
 
 #define Kp_ROLLPITCH 0.02

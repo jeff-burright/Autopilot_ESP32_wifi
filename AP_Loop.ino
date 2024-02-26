@@ -34,11 +34,11 @@
     Read_Gyro();   // This read gyro data
     Read_Accel();     // Read I2C accelerometer
       // Calculations...
-    Matrix_update(); 
-    Normalize();
-    Drift_correction();
-    Euler_angles();
-    Bearing_Rate();
+    //Matrix_update(); 
+    //Normalize();
+   // Drift_correction();
+   // Euler_angles();
+   // Bearing_Rate();
     
  #endif
 
@@ -66,12 +66,16 @@
 ////////// GET HEADING FUNCTION ///////////
 ///////////////////////////////////////////
 
-      //Read_Compass();    // Read I2C magnetometer. commented out experiment 2/24/24
-     // Compass_Heading(); // Calculate magnetic heading Pololus Mag heading. Commented out 2/24/24 experiment
+#if LSMLib == 0
+      Read_Compass();    // Read I2C magnetometer. commented out experiment 2/24/24
+      Compass_Heading(); // Calculate magnetic heading Pololus Mag heading. Commented out 2/24/24 experiment
+#endif
 
+#if LSMLib == 1
       compass.read();  // 2/24/24: replaces Compass_Heading() function and just uses LSM303 lib onboard function instead
       compassheading = compass.heading();
       MAG_Heading = ToRad(compassheading); // allows the drift correction and yaw computation in the DCM tab. heading is pegged to yaw in the Subs tab.
+#endif
 
       Matrix_update(); 
       Normalize();

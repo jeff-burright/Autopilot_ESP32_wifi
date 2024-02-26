@@ -99,11 +99,11 @@ void Accel_Init()
   compass.enableDefault();
 
 
-
+#if LSMLib == 1
 // experiment 2/24/24 CALIBRATION VALUES. using stock LSM303 library example 
 compass.m_min = (LSM303::vector<int16_t>){-663, -683, -611};
 compass.m_max = (LSM303::vector<int16_t>){+453, +427, +460};
-
+#endif
 
 
   switch (compass.getDeviceType())
