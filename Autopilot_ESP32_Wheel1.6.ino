@@ -1,4 +1,4 @@
-/* Jeff's Arduino Autopilot Version ESP32_Wheel1.6. 
+/* Jeff's Arduino Autopilot Version ESP32_Wheel 1.6. 
 Simple compass-only marine autopilot that functions like a Raymarine ST2000 or similar.
 Stable on ESP32. Software support for IBT-2 motor controller, IR remote receiver, red button to toggle steering on/off, LSM303 9DOF compass, and 16x2 LCD. Rudder feedback potentiometer optional.
 If using Wifi, pilot is operational with only ESP32, IMU compass, motor controller, and motor. 
