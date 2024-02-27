@@ -37,7 +37,7 @@ https://www.youtube.com/shorts/sYkNy174X3A
 https://www.youtube.com/watch?v=WxV1NFOIDxg
 
 **INSTALLATION NOTES**
--- For tilt compensation to work, the IMU compass must be calibrated using the LSM303 library calibration example, and the XYZ min/max values must be input to lines 104-105 of the I2C tab in your version of this code. 
+-- In the main Autopilot.INO tab, the #define LSMLib allows you to select the method of tilt compensation. I prefer "0" and think it's more stable at heel, but in order to work properly the IMU must be installed face down. Also, in order to work properly, you have to run the Calibrate.INO example sketch in the LSM303 library and collect the Min/Max XYZ values for your IMU. These values must be input into the main .INO tab starting around line 300 of the code. 
 
 --The build folder in this repo has a ~900kb binary file that can be directly uploaded to an ESP32 without having to install all the libraries (Note: the build uses calibration values for my IMU and may not have good results in your rendition). You will need to have the Arduino IDE or other ESP32 uploading software on your computer to upload the binary the first time via a USB cable (remember to hold down the boot button on the ESP while it's uploading or else it will fail). If you want to change the code for your own purposes and try to recompile, first you will need to find and install all the libraries into your software environment. 
 
