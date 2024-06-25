@@ -29,7 +29,9 @@ with MinIMU-9-Arduino-AHRS. If not, see <http://www.gnu.org/licenses/>.
 */
 #if Compass == 0
 
-void Compass_Heading()   // 2/24/24: currently not in use. using compass.heading() from LSM303 lib instead
+//LSM303 compass;
+
+void Compass_Heading()   // 2/24/24: use depends on whether the LSMLib is at 0 or 1. if LSMLib = 1, this is not used. 
 {
   float MAG_X;
   float MAG_Y;
@@ -45,10 +47,10 @@ void Compass_Heading()   // 2/24/24: currently not in use. using compass.heading
 
 
     //added by chatgpt to make tilt compensation work regardless of imu orientation. Not sure it's adding much because the IMU still only works when face-down
-    //if (c_magnetom_z < 0) {
-      if (abs(roll) < PI / 2.0) {
-    magnetom_x = -magnetom_x;
-    magnetom_y = -magnetom_y; }
+   // if (c_magnetom_z < 0) {
+    //  if (abs(roll) < PI / 2.0) {
+    //magnetom_x = -magnetom_x;
+   // magnetom_y = -magnetom_y; }
 
 
   // adjust for LSM303 compass axis offsets/sensitivity differences by scaling to +/-0.5 range

@@ -1,4 +1,4 @@
-
+#if Tiller == 0 
 // IR Remote start. ESP32 needs an IR Receiver Module with sense wire connected to IR_Receive_Pin. Pinout is changeable.
 
 void IRREMOTE()  { 
@@ -219,12 +219,12 @@ void dodgeleft(){
           Key0_Pressed();
            motorspeed = motorspeedMAX;
             Left_Rudder();
-            delay(500);
+            delay(1000);
 
   //        if(Steering_Mode == 0 || Steering_Mode ==5) return; 
           Rudder_Stop();
-            delay(2000);
-           Key1_Pressed();
+         //   delay(2000);
+         //  Key1_Pressed();
          //  DODGE_MODE = false;
          // Steering_Mode = Previous_Mode;
 }
@@ -237,10 +237,10 @@ void dodgeright(){
           Key0_Pressed();
            motorspeed = motorspeedMAX;
             Right_Rudder();
-            delay(500);
+            delay(1000);
            Rudder_Stop(); 
-           delay(2000);
-           Key1_Pressed();
+           //delay(2000);
+          // Key1_Pressed();
          // DODGE_MODE = false;
          // Steering_Mode = Previous_Mode;
           }
@@ -298,12 +298,21 @@ void Idown(){
 }
 
 void Dup(){
+    #if PIDvals == 3
+K_differential = K_differential + 0.01;
+#else
   K_differential = K_differential + 0.5;
+    #endif
 }
 
 void Ddown(){
   if (K_differential != 0){
-    K_differential = K_differential - 0.1;
+  
+    #if PIDvals == 3
+    K_differential = K_differential - 0.01;
+    #else
+        K_differential = K_differential - 0.5;
+    #endif
 }
 }
 
@@ -316,4 +325,29 @@ void magvardown(){
 }
 
 
+void MMINup(){
+  motorspeedMIN = motorspeedMIN + 10;
+}
 
+void MMINdown(){
+  if (motorspeedMIN !=0){
+  motorspeedMIN = motorspeedMIN - 10;
+  }
+}
+
+void PIDmode1(){
+  #define PID_MODE 1
+ // PID_MODE = 1;
+}
+
+void PIDmode2(){
+ #define PID_MODE 2
+ // PID_MODE = 2;
+}
+
+void PIDmode3(){
+#define PID_MODE 3
+ // PID_MODE = 3;
+}
+
+#endif

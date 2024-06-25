@@ -1,4 +1,4 @@
- /*******************************
+#if Tiller == 0  /*******************************
 
 PID TAB is the PID calculator and it computes and sends rudder control signals
 
@@ -19,12 +19,13 @@ RUDDER_MODE
 
         void Steer_PID()
         {  
-
+#if RUDDER_MODE == 0
          RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
          if(abs(rudder_position) > Maximum_Rudder)  {
            Rudder_Stop();
          }
-         
+         #endif
+
         if(!DODGE_MODE) // if anything other than dodge mode, i.e., if steering
         { 
            // if keypad "1" was pushed Steering_Mode = 1 (compass steer) and heading_to_steer was set to the then current heading  
@@ -56,12 +57,12 @@ RUDDER_MODE
           // Serial.print("  ");
           // Serial.println(differential_error);          
                         
-          #if PID_MODE == 0          
+          #if PID_MODE == 1          
             PID_output = PID_Ks[0] * (PID_Ks[1] * heading_error  - PID_Ks[2] * differential_error); 
             rudder_command = PID_output + Rudder_Offset; // rudder offset set when key 1 or 3 pressed captures rudderoffset only used when User input RUDDER_OFFSET == 1
           #endif
           
-          #if PID_MODE == 1   
+          #if PID_MODE == 2   
            PID_output = PID_Ks[0] * (PID_Ks[1] * heading_error  - PID_Ks[2] * differential_error); 
            rudder_command = rudder_command + PID_output + Rudder_Offset;  // this is a form of integral control was used summer of 2012 with estimated rudder position
           #endif
@@ -126,10 +127,12 @@ RUDDER_MODE
         {
          float Rudder_Power_coeff = 0.5;  //  Set to 0 to not use. Use .5 for default starting point.applies more motor speed proportional to rudder position to have more force to increase rudder at
              // bigger rudder angles to counter weather helm. At bigger rudder positions it takes more force to increase rudder
-              
-          RUDDER_POSITION();// update rudder position  
           
-          if (RUDDER_MODE ==1) rudder_position = 0; // rudder feed back RFB not availabl  
+          #if RUDDER_MODE == 0    
+          RUDDER_POSITION();// update rudder position  
+          #endif
+
+          if (RUDDER_MODE == 1) rudder_position = 0; // rudder feed back RFB not availabl  
           
           rudder_error = rudder_command - rudder_position;
           
@@ -145,12 +148,14 @@ RUDDER_MODE
             
         if(!DODGE_MODE) // do not steer if in dodge mode
         {
-          if(rudder_on)  RUDDER_POSITION(); //if rudder on up date position      
+          #if RUDDER_MODE == 0
+          if(rudder_on)  RUDDER_POSITION(); //if rudder on up date position   
+          #endif   
           if(Steering)
           {   
 
       //motorspeed variable tells motor controller PWM how high to be 0-255.
-        motorspeed = motorspeedMAX/ 30 *rudder_error; // where at 30 degree rudder error speed = MAX. 
+        motorspeed = motorspeedMAX/ 20 *rudder_error; // where at 30 degree rudder error speed = MAX. 
         motorspeed = abs(motorspeed);  // make it a positive integer
 
          #if Rudder_Power_coeff > 0    //see main page for description of rudder power coefficient
@@ -204,7 +209,7 @@ RUDDER_MODE
 ///////////////////////////////////////////////////////////////////////
   //------------------------  RUDDER POSITION  -----------------------
 ///////////////////////////////////////////////////////////////////////
-
+#if RUDDER_MODE == 0
   void RUDDER_POSITION()
   {
      float rudder_position_max = 45;
@@ -231,7 +236,7 @@ RUDDER_MODE
       rudder_position = - rudder_position;  // reverse direction of positive rudder position for Jeff's setup.  
 
   }  // END VOID RUDDER POSITION
-
+#endif
   // ----------------------  END RUDDER POSITION --------------------
     
 
@@ -366,3 +371,5 @@ ledcWrite(8, motorspeed);
    
  */ 
 /********************************************************************************/
+
+#endif

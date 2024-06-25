@@ -20,6 +20,11 @@ void Bearing_Rate()
  // ------------------ End of Block Bearing Rate. can be commented out
  
    bearingrate = ToDeg((Gyro_Vector[2]*cos(roll) + Gyro_Vector[1]*sin(roll))*cos(pitch) - Gyro_Vector[0]*sin(pitch));
+   
+   #if REVERSEYAW == 1
+   bearingrate = -bearingrate;  // test 5/31/24 to fix apparent issue in bench version
+#endif
+   
    #if BEARINGRATE_OFFSET == 1
      bearingrate = bearingrate + bearingrate_Offset; // bearingrate_Offset = - bearingrate when   
                                    // keys 1, 2, 3 maybe 22 pressed  reset to 0 in key 0
@@ -46,11 +51,17 @@ void Bearing_Rate()
 void JNE_AP_Compass_Correction()
 {
 #if Compass == 0 
- // MAG_Heading_Degrees = ToDeg(MAG_Heading);  // coding below here is JNE
+  MAG_Heading_Degrees = ToDeg(MAG_Heading);  // coding below here is JNE
   // AVG_Heading = 0.9*AVG_Heading + .1*MAG_Heading ; // low pass filter
+  //yaw = -yaw;
+
+  #if REVERSEYAW == 1
+  yaw = -yaw;
+  #endif
+
    heading = ToDeg(yaw); // using YAW  use varible heading becuse that is what is used in PID. 
   // heading = compassheading; // using raw LSM303 library heading function
-    //heading = MAG_Heading_Degrees;  // using tilt compensated compass heading from Compass_Heading() function
+  //  heading = MAG_Heading_Degrees;  // using tilt compensated compass heading from Compass_Heading() function
    //heading = ToDeg(AVG_Heading);  // using low pass filtered compass heading
 #endif
    
@@ -117,3 +128,23 @@ void JNE_AP_Compass_Correction()
   
 }  // End JNE_AP_Compass_Correction()
   /******************************/
+
+ 
+
+void compcalib(){
+
+  running_min.x = min(running_min.x, compass.m.x);
+  running_min.y = min(running_min.y, compass.m.y);
+  running_min.z = min(running_min.z, compass.m.z);
+
+  running_max.x = max(running_max.x, compass.m.x);
+  running_max.y = max(running_max.y, compass.m.y);
+  running_max.z = max(running_max.z, compass.m.z);
+  
+  snprintf(report, sizeof(report), "min: {%+6d, %+6d, %+6d}    max: {%+6d, %+6d, %+6d}",
+    running_min.x, running_min.y, running_min.z,
+    running_max.x, running_max.y, running_max.z);
+  //Serial.println(report);
+
+}
+

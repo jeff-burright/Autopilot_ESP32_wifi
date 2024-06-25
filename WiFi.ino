@@ -215,6 +215,14 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
      Ddown();
     }
 
+               else if (strcmp((char*)data, "MMINup") == 0) {
+     MMINup();
+    }
+
+               else if (strcmp((char*)data, "MMINdown") == 0) {
+     MMINdown();
+    }
+    
                else if (strcmp((char*)data, "magvarup") == 0) {
      magvarup();
     }
@@ -222,6 +230,20 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
                else if (strcmp((char*)data, "magvardown") == 0) {
      magvardown();
     }
+
+
+               else if (strcmp((char*)data, "PID1") == 0) {
+     PIDmode1();
+    }
+
+                   else if (strcmp((char*)data, "PID2") == 0) {
+     PIDmode2();
+    }
+
+                   else if (strcmp((char*)data, "PID3") == 0) {
+     PIDmode3();
+    }
+
 
     }
 }
@@ -269,12 +291,15 @@ else if(var == "HEAD") return String(heading, 0);
         else if(var == "HTS") return String(heading_to_steer, 0);
         else if(var == "RUDD") return String(rudder_position, 0);
         else if(var == "DEADBAND") return String(deadband, 1);
-    else if(var == "KOVERALL") return String(K_overall, 1);
-    else if(var == "KHEAD") return String(K_heading, 1);
-    else if(var == "KDIFF") return String(K_differential, 1);
-    else if(var == "KINTEGRAL") return String(K_integral, 4);
+        else if(var == "KOVERALL") return String(K_overall, 1);
+        else if(var == "KHEAD") return String(K_heading, 1);
+        else if(var == "KDIFF") return String(K_differential, 1);
+        else if(var == "KINTEGRAL") return String(K_integral, 4);
         else if(var == "MAGVAR") return String(MagVar_default, 1);
-    
+        else if(var == "PIDMODE") return String(PID_MODE, 1);
+        else if (var == "CALREP") return String(report);
+        else if (var == "PIDREP") return String(pidreport);
+        else if (var == "MMIN") return String(motorspeedMIN, 0);
 return String();
 
 

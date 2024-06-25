@@ -64,7 +64,7 @@
       Compass_Heading(); // Calculate magnetic heading Pololus Mag heading. Commented out 2/24/24 experiment
  
 #endif
-#if LSMLib ==1 
+#if LSMLib == 1 
       compass.read();  // 2/24/24: replaces Compass_Heading() function and just uses LSM303 lib onboard function instead
       compassheading = compass.heading();
       MAG_Heading = ToRad(compassheading); // allows the drift correction and yaw computation in the DCM tab. heading is pegged to yaw in the Subs tab.
