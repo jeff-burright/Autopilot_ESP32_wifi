@@ -18,10 +18,11 @@ Over the air firmware updates may be uploaded by connecting to the pilot's SSID 
 **Thanks to the work of Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot) from which this project grew.**
 
 Videos of the pilot in use:
-https://www.youtube.com/watch?v=wBYxuOjN69g
-https://www.youtube.com/shorts/7anuzTAU0g8
-https://www.youtube.com/shorts/sYkNy174X3A
-https://www.youtube.com/watch?v=WxV1NFOIDxg
+https://www.youtube.com/watch?v=wBYxuOjN69g <br>
+https://www.youtube.com/shorts/7anuzTAU0g8 <br>
+https://www.youtube.com/shorts/sYkNy174X3A <br>
+https://www.youtube.com/watch?v=WxV1NFOIDxg <br>
+https://www.youtube.com/shorts/Dm93frkyZY0 <br>
 
 **INSTALLATION NOTES**
 -- In the main Autopilot.INO tab, you can set your own SSID and password for the pilot, as well as set user-defined variables in the code. It is recommended to check these variables against your own setup. 
