@@ -317,11 +317,11 @@ void Ddown(){
 }
 
 void magvarup(){
-  MagVar_default = MagVar_default + 1;
+  Magnetic_Variation = Magnetic_Variation + 1;
 }
 
 void magvardown(){
-  MagVar_default = MagVar_default - 1;
+  Magnetic_Variation = Magnetic_Variation - 1;
 }
 
 

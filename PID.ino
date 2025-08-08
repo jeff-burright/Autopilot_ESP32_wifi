@@ -1,4 +1,6 @@
-#if Tiller == 0  /*******************************
+#if Tiller == 0  
+
+/*******************************
 
 PID TAB is the PID calculator and it computes and sends rudder control signals
 
@@ -155,8 +157,9 @@ RUDDER_MODE
           {   
 
       //motorspeed variable tells motor controller PWM how high to be 0-255.
-        motorspeed = motorspeedMAX/ 20 *rudder_error; // where at 30 degree rudder error speed = MAX. 
+        motorspeed = motorspeedMAX/ 30 *rudder_error; // where at 30 degree rudder error speed = MAX. 
         motorspeed = abs(motorspeed);  // make it a positive integer
+                if (motorspeed < motorspeedMIN) motorspeed = motorspeedMIN;
 
          #if Rudder_Power_coeff > 0    //see main page for description of rudder power coefficient
           if(abs(rudder_command) > abs(rudder_position))

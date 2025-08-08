@@ -65,7 +65,7 @@ void JNE_AP_Compass_Correction()
    //heading = ToDeg(AVG_Heading);  // using low pass filtered compass heading
 #endif
    
-   Magnetic_Variation = MagVar_default;
+  // Magnetic_Variation = MagVar_default;
   // if (GPRMC_fix) Magnetic_Variation = MagVar;
    
   // Magnetic_Variation = 0;  // use this to read magnetic heading for calibration etc.
@@ -130,7 +130,7 @@ void JNE_AP_Compass_Correction()
   /******************************/
 
  
-
+// compcalib() may be turned on/off on the main .ino tab. It enables compass min/max values to be displayed in the HTML interface while the boat is running, as an alternative to bench calibration using the example calibration sketch from the IMU library
 void compcalib(){
 
   running_min.x = min(running_min.x, compass.m.x);

@@ -295,10 +295,8 @@ else if(var == "HEAD") return String(heading, 0);
         else if(var == "KHEAD") return String(K_heading, 1);
         else if(var == "KDIFF") return String(K_differential, 1);
         else if(var == "KINTEGRAL") return String(K_integral, 4);
-        else if(var == "MAGVAR") return String(MagVar_default, 1);
-        else if(var == "PIDMODE") return String(PID_MODE, 1);
-        else if (var == "CALREP") return String(report);
-        else if (var == "PIDREP") return String(pidreport);
+        else if(var == "MAGVAR") return String(Magnetic_Variation, 1);
+
         else if (var == "MMIN") return String(motorspeedMIN, 0);
 return String();
 

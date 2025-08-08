@@ -23,7 +23,7 @@ Use this code at your own risk.
 #include <Wire.h>
     //   #include <Adafruit_GFX.h> // for small LED screen. Not yet implemented.
      //  #include <Adafruit_SSD1306.h>  // for small LED screen. Not yet implemented.
-#include <Bounce2.h> // use for red button toggle pilot on/off
+#include <Bounce2.h> // use for red button toggle pilot on/off. could be used to add more buttons
 #include <L3G.h> // IMU compass
 #include <BTS7960.h> // IBT-2 motor controller library
 #include <IRremote.h> // infrared remote control
@@ -49,16 +49,16 @@ const char* password = "";
 #define Compass 0 //  0 for LSM303, 1 for BNO055
 #define LSMLib 0 //  1 uses LSM library for compass tilt compensation, 0 uses original Compass_Heading() function.
 #define IMU 2 //  1 for home prototype, 2 for IMU on wheel pilot, 3 for IMU on tiller pilot (Jeff's)    //determines which set of calibration data is used these extra versions were added to code 7/11/17 J14.4
-#define Motor_Controller 3  // 1 for Pololu Qik dual controller, 2 for Pololu Trex dual controller, 3 for generic Controller
-#define RUDDER_MODE 0 // 0 uses rudder position, 1 does not
-#define RUDDER_OFFSET 1 // 1 uses rudder offset, 0 does not
+#define Motor_Controller 3  // 1 for Pololu Qik dual controller, 2 for Pololu Trex dual controller, 3 for generic Controller (I use IBT-2)
+#define RUDDER_MODE 0 // 0 uses rudder position (requires rudder position indicator to be installed), 1 does not
+#define RUDDER_OFFSET 1 // 1 uses rudder offset, 0 does not (requires rudder position indicator)
 #define BEARINGRATE_OFFSET 1 // 1 to use 0 to not use
 #define REVERSEYAW 0 // some installations have reversed compass heading values. Set to 1 to correct. 
-#define PHYSICALBUTTONS 0 // 1 to use, 0 to not use
-#define PIDvals 1 // select starting PID values. 
+#define PHYSICALBUTTONS 1 // 1 to use, 0 to not use
+#define PIDvals 1 // select starting PID values from different options (see below in this .ino). 
 #define PID_MODE 3 // See description PID tab.
 #define smartwatch 1 // activates smartwatch UI functions
- 
+
 // NOTE: search for "motorspeedMIN" to set minimum power to motor. Currently set at 100 for faster response. 
 
 ///////////////////////////////////////////////////
@@ -77,10 +77,10 @@ const char* password = "";
 // Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 
-  // PID starting settings
+  // PID starting settings. These can be adjusted from within the user interface but will reset each time you cycle the power. 
  #if PIDvals == 1  // Jack's values minus rudder indicator
  float K_overall = 1;
- float K_heading = .4;
+ float K_heading = .6;
  float K_differential = 2;
  float K_integral = 0.000;
  float PID_Ks[4] = {K_overall, K_heading, K_differential, K_integral};
@@ -125,6 +125,7 @@ const char* password = "";
  float Rudder_Offset = 0; // see notes 10.21.16
  float bearingrate_Offset = 0;
  float MagVar_default = 14;// 18.4 Seattle   User should keep up to date for loaction.  Pgm will use GPS value if available + east, - west
+float Magnetic_Variation = 14; // sets default magnetic variation based on your boat's latitude
 
  int print_level_max = 1;  //  0 to 4, used to set how much serial monitor detail to print
  // 0 = none, 1=PID Output, 2 Adds parsed GPS data, 3 adds raw GPS input, 4 adds checksum results
@@ -157,7 +158,6 @@ const char* password = "";
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
-
 //LCD screen (16x2 LCD with I2C interface chip)
 LiquidCrystal_I2C lcd(0x27,16,2); //Addr: 0x3F, 20 chars & 4 lines, for serial LCD
 long lcdtimer=0;   //LCD Print timer
@@ -174,7 +174,7 @@ const int IR_RECEIVE_PIN = 27;
 const int Rudder_Pin = 34;  
 
 float MagVar; //Magnetic Variation E is plus, W is minus 
- float Magnetic_Variation; 
+ 
  float heading_error = 0;
  float differential_error = 0;
  float integral_error = 0; 
@@ -219,7 +219,7 @@ float MagVar; //Magnetic Variation E is plus, W is minus
 // Set your new MAC Address for THIS DEVICE
 //uint8_t newMACAddress[] = {0x32, 0xAE, 0xA4, 0x07, 0x0D, 0x66};
 
-uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
+uint8_t broadcastAddress[] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; // broadcasts to any listening device.
 
 // Define variables to store outgoing readings
 float incomingHeading;
@@ -238,7 +238,7 @@ uint8_t incomingCommand;
 String success;
  
 //Structure example to send data
-//Must match the receiver structure
+//Must match the receiver structure (see separate watch code on github)
 typedef struct struct_message {
     int doit;
     float HTS;
@@ -263,14 +263,13 @@ void OnDataRecv(const uint8_t *, const uint8_t *, int);
 
 //assign IBT-2 Pins
 //const uint8_t EN = 25;  // assigned but not used. EN pins on controller are connected to 5v voltage to controller to make them always active.
-
 const uint8_t L_PWM = 32;
 const uint8_t R_PWM = 33;
 
-   int motorspeedMIN = 100; // was 555. this value is the minimum speed sent to controller if left or right rudder is commanded
+   int motorspeedMIN = 75; // This value is the minimum speed sent to controller if left or right rudder is commanded
                            //  rudder stop will still send 0. Use to overcome starting torque. Set so if rudder error greater than the deadband the rudder
                            //  moves at a noticable but slow speed.  Higher values will be more responsive. 
-   int motorspeedMAX = 255; // was 3200. jeff changed consistent with max PWM for IBT-2.
+   int motorspeedMAX = 255; // Max PWM value for IBT-2 (full power).
  
  // ------------------------END IBT-2 MOTOR CONTROLLER SETTINGS ---------------------
 
@@ -345,7 +344,7 @@ int SENSOR_SIGN[9] = {1,-1,-1, -1,1,1, 1,-1,-1}; //Correct directions x,y,z - gy
 #endif
 
 
-//compass calibration bits
+//compass calibration from the HTML interface (see compcalib in the "Subs" tab and CALREP in the wifi tab)
 LSM303::vector<int16_t> running_min = {32767, 32767, 32767}, running_max = {-32768, -32768, -32768};
 char report[80];
 
@@ -795,14 +794,6 @@ color: #BABABA;
 </div>
 </p>
 
-<div class="buttrow"> 
-<button id="dodgeleft" class="button2"><-</button>   
-<button id="dodgeright" class="button2">-></button>
-</div>
-</p>
-
-<p><button id="LCDbacklight" class="button3">LCD light</button></p>
-
     </div>
 <p><h3><i>Wherever you go, there you are</i></h3></p>
   </div>
@@ -845,18 +836,6 @@ color: #BABABA;
 <button id="MMINdown" class="button4">-</button>   <button id="MMINup" class="button4">+</button></span></p>
 </div>
 
-<div class="buttrow"> 
-<p><span id="PID__Mode">PID Mode = $PIDMODE$ <p></p>
-<button id="PID1" class="button4"><1></button>   <button id="PID2" class="button4"><2></button> <button id="PID3" class="button4"><3></button></span></p>
-</div>
-
-<div class="buttrow"> 
-<p><span id="CALREP">CAL = $CALREP$ <p></p>
-</div>
-
-<div class="buttrow"> 
-<p><span id="PIDREP">PID = $PIDREP$ <p></p>
-</div>
 
 <br><br>
 <div class="buttrow"> 
@@ -918,8 +897,6 @@ setInterval(function() {
       root.style.setProperty('--gaugedisplayvalue', obj.rudder_position);
       
 };
-    
-    
   
   
     function onLoad(event) {
@@ -931,7 +908,6 @@ setInterval(function() {
   initadd1();
   initsub90();
   initadd90();
-  initLCDbacklight();
   initRdown();
   initRup();
   initGdown();
@@ -944,11 +920,7 @@ setInterval(function() {
   initDup();
   initmagvardown();
   initmagvarup();
-  initdodgeleft();
-  initdodgeright();
-  initPID1();
-  initPID2();
-  initPID3();
+
     initMMINdown();
   initMMINup();
     }
@@ -1009,26 +981,6 @@ setInterval(function() {
       window.location.reload();
     }
   
-    function initdodgeleft() {
-      document.getElementById('dodgeleft').addEventListener('click', dodgeleft);
-    }
-    function dodgeleft(){
-      websocket.send('dodgeleft');
-    }
-  
-    function initdodgeright() {
-      document.getElementById('dodgeright').addEventListener('click', dodgeright);
-    }
-    function dodgeright(){
-      websocket.send('dodgeright');
-  
-    }
-    function initLCDbacklight() {
-      document.getElementById('LCDbacklight').addEventListener('click', LCDbacklight);
-    }
-    function LCDbacklight(){
-      websocket.send('lcdlightswitch');
-    }
   
     function initRdown() {
       document.getElementById('Rdown').addEventListener('click', Rdown);
@@ -1142,29 +1094,6 @@ function initMMINup() {
       window.location.reload();
     }
 
-    function initPID1() {
-      document.getElementById('PID1').addEventListener('click', PID1);
-    }
-    function PID1(){
-      websocket.send('PID1');
-      window.location.reload();
-    }
-
- function initPID2() {
-      document.getElementById('PID2').addEventListener('click', PID2);
-    }
-    function PID2(){
-      websocket.send('PID2');
-      window.location.reload();
-    }
-
- function initPID3() {
-      document.getElementById('PID3').addEventListener('click', PID3);
-    }
-        function PID3(){
-      websocket.send('PID3');
-      window.location.reload();
-    }
 
 </script>
 
@@ -1191,7 +1120,7 @@ function initMMINup() {
      delay(1000); // give chip some warmup on powering up   
      Serial.println("Let's go somewhere");
 
-//LED display setup
+//LED display setup (never finished)
      //   Wire.begin();
     //       display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
       //     display.display();
@@ -1245,7 +1174,7 @@ ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise 
   //  delay(1000);
 
 esp_wifi_set_promiscuous(true);
-esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE);
+esp_wifi_set_channel(1, WIFI_SECOND_CHAN_NONE); //this facilitates the watch interface with ESPNOW and WiFi running simultaneously
 esp_wifi_set_promiscuous(false);
 
 //Serial.println("Wifi Channel ");
@@ -1278,7 +1207,6 @@ Serial.println(IP);          // default is 192.168.4.1
 
    
  #if Compass == 0
- //SETUP FOR MinIMU9 
  lcd.print("Starting Compass");
  Serial.println("Starting Compass");
      I2C_Init();
@@ -1310,7 +1238,7 @@ Serial.println(IP);          // default is 192.168.4.1
   timer=millis();
   delay(20);
   counter=0;
-  // End setup data for MinIMU9
+  // End setup data for compass IMU
  #endif
  
  Key0_Pressed();         // make doubly-sure AP steering deactivated as intial condition
@@ -1338,7 +1266,7 @@ redbutton();  // tells the steering activate/deactivate toggle button to listen 
 IRREMOTE();   // tells the IR remote to listen
 #endif
 
-compcalib();
+//compcalib(); // turns on compass calibration readings included in the html interface. this doesn't need to stay past the initial installation and breaking in phase.
 
 A_P_Loop(); // Autopilot Loop
 

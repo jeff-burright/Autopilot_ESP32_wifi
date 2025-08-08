@@ -128,7 +128,6 @@ RUDDER_MODE
 /************************ Rudder Control **********************************************/
         void Rudder_Control()
         {
-         int motorspeed_min = 150; // no longer used 5/23/24
          float Rudder_Power_coeff = 0;  //  Set to 0 to not use. Use .5 for default starting point.applies more motor speed proportional to rudder position to have more force to increase rudder at
              // bigger rudder angles to counter weather helm. At bigger rudder positions it takes more force to increase rudder
               
@@ -249,8 +248,6 @@ RUDDER_MODE
       {
           rudder_position = rudder_position_min * (counts - counts_at_zero) / (counts_min - counts_at_zero);
       }
-
-
       rudder_position = - rudder_position;  // reverse direction of positive rudder position for Jeff's setup. 
     
     // rudder_position =map(rudder_position, 187,910,-45,45); 
