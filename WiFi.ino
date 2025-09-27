@@ -159,18 +159,6 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
      remoteadd90();  
     }
 
-           else if (strcmp((char*)data, "lcdlightswitch") == 0) {
-     lcdlightswitch();  
-    }
-
-               else if (strcmp((char*)data, "dodgeleft") == 0) {
-     dodgeleft();  
-    }
-
-               else if (strcmp((char*)data, "dodgeright") == 0) {
-     dodgeright();  
-    }
-
                else if (strcmp((char*)data, "readheading") == 0) {
      readheading();
     }
@@ -215,35 +203,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
      Ddown();
     }
 
-               else if (strcmp((char*)data, "MMINup") == 0) {
-     MMINup();
-    }
-
-               else if (strcmp((char*)data, "MMINdown") == 0) {
-     MMINdown();
-    }
     
-               else if (strcmp((char*)data, "magvarup") == 0) {
-     magvarup();
-    }
-
-               else if (strcmp((char*)data, "magvardown") == 0) {
-     magvardown();
-    }
-
-
-               else if (strcmp((char*)data, "PID1") == 0) {
-     PIDmode1();
-    }
-
-                   else if (strcmp((char*)data, "PID2") == 0) {
-     PIDmode2();
-    }
-
-                   else if (strcmp((char*)data, "PID3") == 0) {
-     PIDmode3();
-    }
-
 
     }
 }
@@ -297,7 +257,6 @@ else if(var == "HEAD") return String(heading, 0);
         else if(var == "KINTEGRAL") return String(K_integral, 4);
         else if(var == "MAGVAR") return String(Magnetic_Variation, 1);
 
-        else if (var == "MMIN") return String(motorspeedMIN, 0);
 return String();
 
 

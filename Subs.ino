@@ -70,7 +70,7 @@ void JNE_AP_Compass_Correction()
    
   // Magnetic_Variation = 0;  // use this to read magnetic heading for calibration etc.
     
-   heading = heading + Magnetic_Variation;
+   heading = heading + Magnetic_Variation - 280;
    if(heading < 0) heading = 360 + heading; //already a minus, convert to 0-360
    if(heading > 360) heading = heading -360;  //these corrections need if calibration result runs over or under 360
   

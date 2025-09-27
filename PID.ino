@@ -217,12 +217,16 @@ RUDDER_MODE
   {
      float rudder_position_max = 45;
      float rudder_position_min = -45;
-     float counts_max = 827;  // from calibration in print statement
-     float counts_at_zero = 415;
+     float counts_max = 1500;  // from calibration in print statement
+     //float counts_at_zero = 415;
+          float counts_at_zero = 750;
      float counts_min = 0;
      float counts;
      
      
+     rawRuddPin = analogRead(Rudder_Pin);
+      //counts =  (alpha * rawRuddPin) + ((1 - alpha) * LPFRuddPin); // low pass filter 
+
      counts = analogRead(Rudder_Pin);  // rudder potentiometer pin input
      //Serial.print("Rudder pin = "); // use these print lines to get counts for calibration
      //Serial.println(counts);
