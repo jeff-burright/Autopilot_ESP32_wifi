@@ -17,8 +17,8 @@ double check PID settings
 Thanks to the work of Jack Edwards (https://github.com/CoyoteWaits/Jack_Edwards_Autopilot) from which this project grew.
 Use this code at your own risk. 
 */
+// #include <Arduino.h>
 
-#include <Keypad.h>
 #include <LiquidCrystal_I2C.h>
 #include <Wire.h>
     //   #include <Adafruit_GFX.h> // for small LED screen. Not yet implemented.
@@ -33,10 +33,12 @@ Use this code at your own risk.
 #include <WiFi.h>  // necessary for WiFi control
 #include <AsyncTCP.h> // necessary for WiFi control
 #include <ESPAsyncWebServer.h>  // necessary for WiFi control
-#include <AsyncElegantOTA.h> // over the air update of compiled binary via 192.168.4.1/update
+//#include <AsyncElegantOTA.h> // over the air update of compiled binary via 192.168.4.1/update
+#include <ElegantOTA.h>
 #include <ArduinoJson.h> // Include ArduinoJson Library. Necessary for updating heading data and rudder position gauge in the HTML
 #include <esp_now.h>  //for smartwatch UI
 #include <esp_wifi.h> // for smartwatch UI
+#include <Keypad.h>
 
 
 // Replace with your WIFI network credentials. Point control device browser to 192.168.4.1
@@ -1141,11 +1143,12 @@ IrReceiver.begin(IR_RECEIVE_PIN, DISABLE_LED_FEEDBACK);
 
 //ledcSetup for IBT-2 motor controller (PWMChannel, PWMFreq, PWMResolution); //sets frequency (24kHz) and resolution (8bit) for motor controller PWM
 //purpose is to change frequency and reduce motor noise
-ledcSetup(7,24000,8);
-ledcSetup(8,24000,8);
-ledcAttachPin(L_PWM, 7); //assigns PWM channel for frequency shift (motor noise fix)
-ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise fix)
-
+//ledcSetup(7,24000,8);
+//ledcSetup(8,24000,8);
+//ledcAttachPin(L_PWM, 7); //assigns PWM channel for frequency shift (motor noise fix)
+//ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise fix)
+ledcAttach (L_PWM, 24000, 8);
+ledcAttach (R_PWM, 24000, 8);
 
 // ------------------------------    WIFI setup   ------------------------------------------
  
@@ -1200,7 +1203,7 @@ Serial.println(IP);          // default is 192.168.4.1
   });
 
   // Start server
-  AsyncElegantOTA.begin(&server); // OTA updates. Go to 192.168.4.1/update
+  ElegantOTA.begin(&server); // OTA updates. Go to 192.168.4.1/update
   server.begin();
 
   //------------------- end WIFI setup -----------------------
@@ -1267,8 +1270,7 @@ IRREMOTE();   // tells the IR remote to listen
 #endif
 
 //compcalib(); // turns on compass calibration readings included in the html interface. this doesn't need to stay past the initial installation and breaking in phase.
-
+ElegantOTA.loop();
 A_P_Loop(); // Autopilot Loop
 
  }    
-

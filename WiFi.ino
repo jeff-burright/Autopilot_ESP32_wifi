@@ -35,7 +35,8 @@ void espnowsetup(){
 }
 
 // ESP-NOW Callback when data is sent
-void OnDataSent(const uint8_t *broadcastAddress, esp_now_send_status_t status) {
+void OnDataSent(const esp_now_send_info_t *tx_info, esp_now_send_status_t status){
+//void OnDataSent(const uint8_t *broadcastAddress, esp_now_send_status_t status) {     deprecated syntax when moving from ESP32 Arduino core 2.1.2 to 3. 
 //void OnDataSent(const uint8_t *broadcastAddress, esp_now_send_status_t status) {
   Serial.print("\r\nLast Packet Send Status:\t");
   Serial.println(status == ESP_NOW_SEND_SUCCESS ? "Delivery Success" : "Delivery Fail");
@@ -48,7 +49,8 @@ void OnDataSent(const uint8_t *broadcastAddress, esp_now_send_status_t status) {
 }
 
 // ESP-NOW Callback when data is received
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+void OnDataRecv(const esp_now_recv_info_t * mac_info, const uint8_t * incomingData, int len) {
+//void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {            old syntax from ESO32 Arduino 2.1.2.
   memcpy(&APCommand, incomingData, sizeof(APCommand));
   Serial.print("Bytes received: ");
   Serial.println(len);
@@ -302,8 +304,3 @@ return String();
 
 
 }
-
-
-
-
-

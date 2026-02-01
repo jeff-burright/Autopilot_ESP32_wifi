@@ -265,8 +265,8 @@ RUDDER_MODE
 //analogWrite(L_PWM, 0); //  IBT-2 direct override
 //analogWrite(R_PWM, 0);
 
-ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
-ledcWrite(8, 0);
+ledcWrite(L_PWM, 0);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(R_PWM, 0);
 
    #endif  
   //  rudder_stop_time = millis();
@@ -289,8 +289,8 @@ ledcWrite(8, 0);
      
      #if Motor_Controller == 3   // IBT-2 selected
 
-ledcWrite(8, 0);
-ledcWrite(7, motorspeed);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(R_PWM, 0);
+ledcWrite(L_PWM, motorspeed);    // changing to ledcwrite for ESP32 PWM
 
      #endif
      
@@ -317,8 +317,8 @@ ledcWrite(7, motorspeed);    // changing to ledcwrite for ESP32 PWM
      
      #if Motor_Controller == 3   // IBT-2 selected
 
-ledcWrite(7, 0);    // changing to ledcwrite for ESP32 PWM
-ledcWrite(8, motorspeed);
+ledcWrite(L_PWM, 0);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(R_PWM, motorspeed);
 
      #endif
     
