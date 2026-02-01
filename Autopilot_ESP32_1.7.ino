@@ -61,6 +61,9 @@ const char* password = "";
 #define PID_MODE 3 // See description PID tab.
 #define smartwatch 1 // activates smartwatch UI functions
 
+float Magnetic_Variation = 14; // sets default magnetic variation based on your boat's latitude
+float IMU_Install_Correction = 88 // use this to correct the compass heading reading based on the orientation of your IMU once installed. This will add to the raw compass reading in the Subs tab
+
 // NOTE: search for "motorspeedMIN" to set minimum power to motor. Currently set at 100 for faster response. 
 
 ///////////////////////////////////////////////////
@@ -127,7 +130,7 @@ const char* password = "";
  float Rudder_Offset = 0; // see notes 10.21.16
  float bearingrate_Offset = 0;
  float MagVar_default = 14;// 18.4 Seattle   User should keep up to date for loaction.  Pgm will use GPS value if available + east, - west
-float Magnetic_Variation = 14; // sets default magnetic variation based on your boat's latitude
+
 
  int print_level_max = 1;  //  0 to 4, used to set how much serial monitor detail to print
  // 0 = none, 1=PID Output, 2 Adds parsed GPS data, 3 adds raw GPS input, 4 adds checksum results
@@ -174,6 +177,11 @@ const int IR_RECEIVE_PIN = 27;
 
  // Rudder position sensor
 const int Rudder_Pin = 34;  
+// Rudder sensor low pass filter
+const float alpha = 0.10f;
+const int rudddeadband = 6;
+float filt = 0.0f;
+int stableOut = 0;
 
 float MagVar; //Magnetic Variation E is plus, W is minus 
  
@@ -1149,6 +1157,13 @@ IrReceiver.begin(IR_RECEIVE_PIN, DISABLE_LED_FEEDBACK);
 //ledcAttachPin(R_PWM, 8); //assigns PWM channel for frequency shift (motor noise fix)
 ledcAttach (L_PWM, 24000, 8);
 ledcAttach (R_PWM, 24000, 8);
+
+
+// Rudder low pass filter
+int raw = analogRead(Rudder_Pin);
+filt = raw;
+stableOut = raw;
+
 
 // ------------------------------    WIFI setup   ------------------------------------------
  

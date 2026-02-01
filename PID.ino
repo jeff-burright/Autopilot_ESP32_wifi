@@ -222,8 +222,19 @@ RUDDER_MODE
      float counts_min = 0;
      float counts;
      
-     
-     counts = analogRead(Rudder_Pin);  // rudder potentiometer pin input
+     //low pass filter
+  int raw = analogRead(Rudder_Pin);  
+  filt += alpha * (raw-filt);
+  int smooth = (int)(filt + 0.5f);
+
+  // low pass filter deadband
+    if (abs(smooth - stableOut) > deadband) {
+    stableOut = smooth;
+  }
+
+counts = stableOut;
+
+     //counts = analogRead(Rudder_Pin);  // rudder potentiometer pin input
      //Serial.print("Rudder pin = "); // use these print lines to get counts for calibration
      //Serial.println(counts);
 
