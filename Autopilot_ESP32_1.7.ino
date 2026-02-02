@@ -62,7 +62,7 @@ const char* password = "";
 #define smartwatch 1 // activates smartwatch UI functions
 
 float Magnetic_Variation = 14; // sets default magnetic variation based on your boat's latitude
-float IMU_Install_Correction = 88 // use this to correct the compass heading reading based on the orientation of your IMU once installed. This will add to the raw compass reading in the Subs tab
+float IMU_Install_Correction = 88; // use this to correct the compass heading reading based on the orientation of your IMU once installed. This will add to the raw compass reading in the Subs tab
 
 // NOTE: search for "motorspeedMIN" to set minimum power to motor. Currently set at 100 for faster response. 
 
