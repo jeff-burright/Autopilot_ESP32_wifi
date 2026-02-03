@@ -1,7 +1,7 @@
 **The Plot Device. 
 ESP32 Wheel/Tiller Autopilot, Version 1.7  (with parts list and build info!).**
 
-This is a simple, inexpensive (~$150 total project cost including motor linkage), compass-only marine autopilot for wheel or tiller that functions like a Raymarine ST2000 or a CPT. Version 1.7 integrates the tiller and wheel versions of the code and allows the user to switch between the two versions inside the USER INPUT section of the main .INO file. As of January 2026, the code is updated to ESP32 Arduino Core 3 from 2.1.2. You will need to make two simple changes to libraries (described below) for the code to compile and work properly.
+This is a simple, inexpensive (~$150 total project cost including motor linkage), compass-only marine autopilot for wheel or tiller that functions like a Raymarine ST2000 or a CPT. Version 1.7 integrates the tiller and wheel versions of the code and allows the user to switch between the two versions inside the USER INPUT section of the main .INO file. As of January 2026, the code is updated to ESP32 Arduino Core 3 from 2.1.2. You will need to make three simple changes to libraries (described below) for the code to compile and work properly.
 
 Check out the parts list document file within this repo for part links/costs, general build instructions, wiring pinouts, and photos of my two installations on wheel and tiller. Note also the list of libraries that need to be installed within the Arduino IDE software Library Manager before you will be able to successfully compile the code. If you can't find one, you can google the library name, download the zip file from its repository, then within the Arduino IDE add the libraries from zip file. 
 
