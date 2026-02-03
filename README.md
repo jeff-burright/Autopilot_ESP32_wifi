@@ -30,6 +30,7 @@ https://www.youtube.com/shorts/Dm93frkyZY0 <br>
 -- The user setting #define LSMLib allows you to select the method of tilt compensation. I prefer "0" and think it's more stable at heel, but in order to work properly in this configuration the IMU must be installed face down. You will also need to run the Calibrate.INO example sketch in the LSM303 library and collect the Min/Max XYZ values for your IMU. These values must be input into the main .INO tab starting around line 320 of the code. 
 
 LIBRARY CHANGES REQUIRED FOR SUCCESSFUL COMPILE:
+
 -- In cores\esp32\IPAddress.h, 
 replace:
 const IPAddress INADDR_NONE(0,0,0,0);
