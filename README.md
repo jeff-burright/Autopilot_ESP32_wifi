@@ -29,11 +29,14 @@ https://www.youtube.com/shorts/Dm93frkyZY0 <br>
 
 -- The user setting #define LSMLib allows you to select the method of tilt compensation. I prefer "0" and think it's more stable at heel, but in order to work properly in this configuration the IMU must be installed face down. You will also need to run the Calibrate.INO example sketch in the LSM303 library and collect the Min/Max XYZ values for your IMU. These values must be input into the main .INO tab starting around line 320 of the code. 
 
--- One change to a library file  needs to be made for the code to compile. In cores\esp32\IPAddress.h, 
+LIBRARY CHANGES REQUIRED FOR SUCCESSFUL COMPILE:
+-- In cores\esp32\IPAddress.h, 
 replace:
 const IPAddress INADDR_NONE(0,0,0,0);
 with:
 const IPAddress IP_ADDR_NONE(0,0,0,0);
+
+-- In the file ElegantOTA.h, make sure the variable #define ELEGANTOTA_USE_ASYNC_WEBSERVER is set to 1.
 
 --Even with all the right libraries and a successful compile/upload, the UI webpage will not load without one additional tweak. The HTML file was bugging out because the ESPAsyncWebServer library uses % to mark placholder text (like for settings and heading information), but the css stylesheet for the rudder gauge also uses % for its normal meaning. You will need to follow the instructions on this page for changing all the % placeholders to $ within the WebResponseImpl.h file in your version of the ESPAsyncWebServer library: https://stackoverflow.com/questions/74649351/espasyncwebserver-request-send-p-problem. 
 
