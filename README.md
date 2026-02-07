@@ -52,7 +52,7 @@ Use at your own risk and good luck!
 
 Phone Interface (with optional rudder gauge):
 
-<img src="https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/documentation/)AP-screenshot_v1_3(1).png" width="300" />
+<img src="https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/documentation/AP-screenshot_v1_3(1).png" width="300" />
 
 Tablet with split-screen pilot and Navionics:
 
