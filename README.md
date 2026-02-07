@@ -47,8 +47,11 @@ const IPAddress IP_ADDR_NONE(0,0,0,0);
 Use at your own risk and good luck! 
 
 
+Phone Interface (with optional rudder gauge):
 
-<img src="https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/AP-screenshot_v1_3.png" width="200" />
+<img src="https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/AP-screenshot_v1_3.png" width="300" />
+
+Tablet with split-screen pilot and Navionics:
 
 ![jeff-burright/Autopilot_ESP32_wifi/](https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/documentation/Screenshot_20260207-143536.png)
 
