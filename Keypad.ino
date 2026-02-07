@@ -1,4 +1,4 @@
-#if Tiller == 0 
+
 // IR Remote start. ESP32 needs an IR Receiver Module with sense wire connected to IR_Receive_Pin. Pinout is changeable.
 
 void IRREMOTE()  { 
@@ -139,7 +139,27 @@ else {Key0_Pressed();}
  Serial.println(heading_to_steer);
                 //notifyClients();   // send notification to web interface to update values
 }
-               
+
+void toggleRUDD(){  // Toggle between using the rudder position sensor while the pilot is turned on
+if (!rudd_sensor_off)
+{rudd_sensor_off = true;
+rudder_position = 0;
+}
+else {
+    rudd_sensor_off = false;}
+
+                //notifyClients();   // send notification to web interface to update values
+}         
+
+void togglecompcalib(){  // Toggle between using the rudder position sensor while the pilot is turned on
+if (!compass_calib)
+{compass_calib = true;
+}
+else {
+    compass_calib = false;}
+
+                //notifyClients();   // send notification to web interface to update values
+}    
 
 void remotesub10(){ 
 
@@ -217,8 +237,8 @@ void dodgeleft(){
          //   Previous_Mode = Steering_Mode;
           //  Steering_Mode ==5;
           Key0_Pressed();
-           motorspeed = motorspeedMAX;
-            Left_Rudder();
+ledcWrite(R_PWM, 0);
+ledcWrite(L_PWM, 255);  
             delay(1000);
 
   //        if(Steering_Mode == 0 || Steering_Mode ==5) return; 
@@ -235,8 +255,8 @@ void dodgeright(){
            // Previous_Mode = Steering_Mode;
            //  Steering_Mode ==5;
           Key0_Pressed();
-           motorspeed = motorspeedMAX;
-            Right_Rudder();
+ledcWrite(L_PWM, 0);    // changing to ledcwrite for ESP32 PWM
+ledcWrite(R_PWM, 255);
             delay(1000);
            Rudder_Stop(); 
            //delay(2000);
@@ -350,4 +370,3 @@ void PIDmode3(){
  // PID_MODE = 3;
 }
 
-#endif

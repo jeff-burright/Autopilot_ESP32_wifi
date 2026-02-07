@@ -27,7 +27,7 @@ void Bearing_Rate()
    
    #if BEARINGRATE_OFFSET == 1
      bearingrate = bearingrate + bearingrate_Offset; // bearingrate_Offset = - bearingrate when   
-                                   // keys 1, 2, 3 maybe 22 pressed  reset to 0 in key 0
+    
    #endif    
       // vertical axis bearing rate from gyros
    // bearing rate needs to be zero if boat is not turning otherwise it creates a bias in heading error
@@ -65,16 +65,12 @@ void JNE_AP_Compass_Correction()
    //heading = ToDeg(AVG_Heading);  // using low pass filtered compass heading
 #endif
    
-  // Magnetic_Variation = MagVar_default;
-  // if (GPRMC_fix) Magnetic_Variation = MagVar;
-   
-  // Magnetic_Variation = 0;  // use this to read magnetic heading for calibration etc.
+  
     
    heading = heading + Magnetic_Variation + IMU_Install_Correction;
    if(heading < 0) heading = 360 + heading; //already a minus, convert to 0-360
    if(heading > 360) heading = heading -360;  //these corrections need if calibration result runs over or under 360
   
-  //  Compass_Calibration();  // interpolate compass variation table (or curve fit)
 
   // Jeff commented out the below as a test
    /*  if(Screen == 0){
@@ -90,41 +86,7 @@ void JNE_AP_Compass_Correction()
   //delta_compass_time = compass_time - compass_timeold;
  // compass_timeold = compass_time;
 
-/*
- void Compass_Calibration() //Compass Calibration added by Jack Edwards
-{
-  float compass_correction;
-//two approaches interpolation of error and curve fit to error
 
-//INTERPOLATION
-  float Compass_CAL[25] = {.1,-.6,-1.2,-1.6,-2,-2.3,-2.3,-2.7,-2.0,-2.0,-1.1,-.5,-.3,-.1,0,.6,-.2,.2,-.3,-.5,-.4,.1,-.1,-.4,-.4};
- index = (unsigned int)heading/15;  //integer part of heading/15
-   compass_correction = Compass_CAL[index] + (heading/15 -index)*(Compass_CAL[index +1] -Compass_CAL[index]);
- 
- // CURVE FIT TO ERROR curent best fit is two intersecting straight lines use excel to plot error and get curve fits
- 
-       /*if (heading <=79.2)
-       {
-        compass_correction =-.054*heading - .3298;
-       }
-        else
-       {
-         compass_correction =.0177*heading - 6.0007;
-       }
-       */
- 
- /*
-  heading= heading + compass_correction;
-  if(heading < 0) heading = 360 + heading; //already a minus, convert to 0-360
-  if(heading>360) heading = heading -360;  //these corrections need if calibration result runs over or under 360
-  */
-          /*
-          lcd.setCursor(0,2);
-          lcd.print("Correction");
-          lcd.setCursor(12,2);
-          lcd.print(compass_correction);
-          */
-  //}  // End Compass Calibration
   
 }  // End JNE_AP_Compass_Correction()
   /******************************/
@@ -141,7 +103,7 @@ void compcalib(){
   running_max.y = max(running_max.y, compass.m.y);
   running_max.z = max(running_max.z, compass.m.z);
   
-  snprintf(report, sizeof(report), "min: {%+6d, %+6d, %+6d}    max: {%+6d, %+6d, %+6d}",
+  snprintf(report, sizeof(report), "{%+6d, %+6d, %+6d}    {%+6d, %+6d, %+6d}",
     running_min.x, running_min.y, running_min.z,
     running_max.x, running_max.y, running_max.z);
   //Serial.println(report);

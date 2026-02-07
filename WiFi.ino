@@ -233,6 +233,14 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
      magvardown();
     }
 
+               else if (strcmp((char*)data, "compcalon") == 0) {
+     togglecompcalib();
+    }
+
+
+                   else if (strcmp((char*)data, "toggleRUDD") == 0) {
+    toggleRUDD();
+    }
 
                else if (strcmp((char*)data, "PID1") == 0) {
      PIDmode1();
@@ -298,8 +306,27 @@ else if(var == "HEAD") return String(heading, 0);
         else if(var == "KDIFF") return String(K_differential, 1);
         else if(var == "KINTEGRAL") return String(K_integral, 4);
         else if(var == "MAGVAR") return String(Magnetic_Variation, 1);
-
+        else if (var == "CALREP") return String(report);
         else if (var == "MMIN") return String(motorspeedMIN, 0);
+
+        else if (var == "RUDDSTATE") {
+          if (!rudd_sensor_off){        // this actually works to report the state on the phone
+            return "ON";
+            }
+            else{
+              return "OFF";
+                }
+            }
+
+        else if (var == "COMPCALIBSTATE") {
+          if (!compass_calib){        // this actually works to report the state on the phone
+            return "OFF";
+            }
+            else{
+              return "ON";
+                }
+            }
+
 return String();
 
 

@@ -1,4 +1,4 @@
-#if Tiller == 0  
+
 
 /*******************************
 
@@ -10,6 +10,7 @@ PID_MODE
  MODE 0: rudder_command = PID_output with no integral_error term
  MODE 1: rudder_command = rudder_command + PID_output.  This is a form of integral control. Was used successfully summer 2012
  MODE 3: rudder_command = PID_output and includes integral error.
+
 RUDDER_MODE 
   Rudder mode determines which mode of PID control and rudder control are used.
   MODE 0: Rudder controlled to specified rudder_position
@@ -21,21 +22,20 @@ RUDDER_MODE
 
         void Steer_PID()
         {  
+
 #if RUDDER_MODE == 0
-         RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
+         //RUDDER_POSITION(); // 9.22.17 added to update rudder position and stop rudder in Dodge Mode but good for all modes in V14.7
          if(abs(rudder_position) > Maximum_Rudder)  {
            Rudder_Stop();
          }
-         #endif
+#endif
 
         if(!DODGE_MODE) // if anything other than dodge mode, i.e., if steering
         { 
-           // if keypad "1" was pushed Steering_Mode = 1 (compass steer) and heading_to_steer was set to the then current heading  
-          // MSG = 0; // null
 
         heading_error = heading_to_steer - heading;  // This is the main PID proportional term for compass based steering           
         
-           // Serial.print("Wind Error "); Serial.print(wind_error); Serial.print("; heading to steer "); Serial.println(heading_to_steer);            
+        
            if (abs(heading_error) > 180) // this limits error to < 180 and makes turn short way on compass + right, - left
             {
                if(heading_to_steer > heading)  heading_error = heading_error - 360;
@@ -89,17 +89,14 @@ RUDDER_MODE
           lcd.print("IE ");
           lcd.print(integral_error *PID_Ks[0],1);// diagnostic note THis is effective integral error because IE multiplied by PID_Ks[0] above.
           */ 
-           // if(abs(heading_error) < 10) TACK_ON = false;  // used to limit tack rate probably not needed
-          //  if(TACK_ON) rudder_MAX = Tack_rudder_MAX; // 
+
           #endif
-          
 
           rudder_MAX = Maximum_Rudder;
          
-  //        if(new_waypoint) rudder_MAX = new_waypoint_rudder_MAX;
-         // rudder_command=constrain(rudder_command,-rudder_MAX,rudder_MAX);
         }   // end if  not DODGE_MODE
         
+
         if(!Steering)
            {
              rudder_command = 0;
@@ -124,6 +121,7 @@ RUDDER_MODE
          }   // end if Print PID       
        }  // End Void Steer_PID()  
 
+
 /************************ Rudder Control **********************************************/
         void Rudder_Control()
         {
@@ -131,28 +129,45 @@ RUDDER_MODE
              // bigger rudder angles to counter weather helm. At bigger rudder positions it takes more force to increase rudder
           
           #if RUDDER_MODE == 0    
-          RUDDER_POSITION();// update rudder position  
+          if (!rudd_sensor_off){
+          RUDDER_POSITION(); // update rudder position 
+          }
+          else {  
+          rudder_position = 0;
+          Rudder_Offset = rudder_position;
+          }
+         
           #endif
 
           if (RUDDER_MODE == 1) rudder_position = 0; // rudder feed back RFB not availabl  
           
+
+
           rudder_error = rudder_command - rudder_position;
           
           if(Steering_Mode == 0 || !sw1 || !sw2)  // sw1 and sw2 need to be on for automated steering
          {
             Steering = false;
-            //Rudder_Stop();
          }
         
-       // if(Steering_Mode == 1 || Steering_Mode == 2 || Steering_Mode ==3 || Steering_Mode == 5) Steering = true; // could use if Steering_Mode >0
+ 
        if(Steering_Mode >0) Steering = true;
        // if(DODGE_MODE) Steering = false; //  if keypad LEFT or RIGHT RUDDER skip PID rudder control
             
         if(!DODGE_MODE) // do not steer if in dodge mode
         {
           #if RUDDER_MODE == 0
-          if(rudder_on)  RUDDER_POSITION(); //if rudder on up date position   
+         // if(rudder_on)  RUDDER_POSITION(); //if rudder on up date position   
+                   if (!rudd_sensor_off){
+          RUDDER_POSITION(); // update rudder position 
+          }
+          else {  
+          rudder_position = 0;
+          Rudder_Offset = rudder_position;
+          }
+
           #endif   
+
           if(Steering)
           {   
 
@@ -171,17 +186,6 @@ RUDDER_MODE
        // Serial.print("motor speed ");Serial.println(motorspeed);     
         
 
-            
-/* This block treplaced as above to generalize it in terms of motorspeed max and Min to accomodate different controllers
-         motorspeed = 128/30*rudder_error;  // rudder error of 30 deg will result in full speed on rudder
-        //  motorspeed = 128.0/40.0*(rudder_command); // + = right, - = left
-         if( motorspeed > 127) motorspeed = 127;
-         if ( motorspeed < -127) motorspeed = -127;
-         motorspeed= abs(motorspeed);
-         if (motorspeed < motorspeed_min) motorspeed = motorspeed_min;
-        // TACK_ON is set true for steering mode 3 when key 4 or 6 is pushed.  this sets max rudder and rudder speed to tack values 
-        // when regular rudder command is less than deadband + 1, TACK_ON is turned off to revert to regular steering
- */
 
                        if(abs(rudder_error) < deadband) 
                          {
@@ -215,13 +219,30 @@ RUDDER_MODE
 #if RUDDER_MODE == 0
   void RUDDER_POSITION()
   {
+
+    // use these print lines to get counts for calibration
+     //Serial.print("Rudder pin = "); 
+     //Serial.println(counts);
+
+    #if RUDDER_SENSOR == 0
      float rudder_position_max = 45;
      float rudder_position_min = -45;
      float counts_max = 827;  // from calibration in print statement
      float counts_at_zero = 415;
      float counts_min = 0;
      float counts;
-     
+     #endif
+
+#if RUDDER_SENSOR == 1
+     float rudder_position_max = 45;
+     float rudder_position_min = -45;
+     float counts_max = 1500;  // from calibration in print statement
+     //float counts_at_zero = 415;
+          float counts_at_zero = 750;
+     float counts_min = 0;
+     float counts;
+#endif
+
      //low pass filter
   int raw = analogRead(Rudder_Pin);  
   filt += alpha * (raw-filt);
@@ -232,11 +253,9 @@ RUDDER_MODE
     stableOut = smooth;
   }
 
-counts = stableOut;
+  counts = stableOut;
+    // end low pass filter
 
-     //counts = analogRead(Rudder_Pin);  // rudder potentiometer pin input
-     //Serial.print("Rudder pin = "); // use these print lines to get counts for calibration
-     //Serial.println(counts);
 
       if(counts >= counts_at_zero) // linear calibration from zero
       {
@@ -267,19 +286,10 @@ counts = stableOut;
    #endif
 
    #if Motor_Controller == 3 
-    //   motorspeed = 0;
-      // Serial_MotorControl.write(Motor_1_fwd);
-       //Serial_MotorControl.write(motorspeed & 0x1F);
-       //Serial_MotorControl.write(motorspeed >> 5);
-      // motor.stop();  // L298 commented out
-
-//analogWrite(L_PWM, 0); //  IBT-2 direct override
-//analogWrite(R_PWM, 0);
-
 ledcWrite(L_PWM, 0);    // changing to ledcwrite for ESP32 PWM
 ledcWrite(R_PWM, 0);
-
    #endif  
+
   //  rudder_stop_time = millis();
       rudder_on = false; 
       rudder_was_off = true;    
@@ -351,39 +361,4 @@ ledcWrite(R_PWM, motorspeed);
 
  /*************************************************************************************/   
  
- 
 
- 
- /*************************************************************************************/
- /*
-     void Tracking_Error()
-  {
-    /*  tracking error is difference between course over ground and compass heading.
-        Its purpose is to compensate for lack of accuracy in heading sensor. It also
-        corrects drift or anything else that causes a deviation betweeen the direction the boat 
-        is travelling and the direction the compass says it is pointing.  The results are low pass
-        filtered to provide a time averaged result that will not change abruptly wwhen going to a new course
-        but recompute on a new course.
-     */
-     
-
-/*  
-           float tracking_error_LPF = .999; // tracking error updates when GPS updates about  once per second
-           if(GPRMC_fix && SOG > 1)// only updates if valid fix  may want to add a lower speed limit
-           {
-             tracking_error = course - heading; // would like to use an average heading but need to figure out how so the 1  and 359 doesn't avg to 180
-             
-                if (abs(tracking_error) > 180) // this limits err0r to < 180 and makes turn short way on compass + right, - left
-                  {
-                     if(course > heading)  tracking_error = tracking_error - 360;
-                     if(course < heading) tracking_error = 360 + tracking_error;
-                  }
-             
-             AVG_tracking_error = tracking_error_LPF * AVG_tracking_error + (1 - tracking_error_LPF) * tracking_error;
-           } // end if
-         } // end Tracking_Error
-   
- */ 
-/********************************************************************************/
-
-#endif
