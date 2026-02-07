@@ -47,6 +47,7 @@ const IPAddress IP_ADDR_NONE(0,0,0,0);
 Use at your own risk and good luck! 
 
 
-![jeff-burright/Autopilot_ESP32_wifi/](https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/AP-screenshot_v1_3.png)
+
+<img src="https://your-image-url.png" width="200" />
 ![jeff-burright/Autopilot_ESP32_wifi/](https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/documentation/Screenshot_20260207-143536.png)
 
