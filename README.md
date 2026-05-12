@@ -58,3 +58,6 @@ Tablet with split-screen pilot and Navionics:
 
 ![jeff-burright/Autopilot_ESP32_wifi/](https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/documentation/Screenshot_20260207-143536.png)
 
+3D-Printed Pedestal Mounted Motor Box. Box slides up and down to engage/disengage the belt and has a sliding latch to hold it in the down position when engaged.
+
+<img src="https://github.com/jeff-burright/Autopilot_ESP32_wifi/blob/main/documentation/apbox3d.jpg" width="300" />
