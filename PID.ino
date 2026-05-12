@@ -254,6 +254,8 @@ RUDDER_MODE
   }
 
   counts = stableOut;
+
+ 
     // end low pass filter
 
 
@@ -267,6 +269,12 @@ RUDDER_MODE
       }
 
       rudder_position = - rudder_position;  // reverse direction of positive rudder position for Jeff's setup.  
+       
+       
+        #if RUDDER_SENSOR == 1
+              rudder_position = rudder_position - rcal;
+        #endif
+
 
   }  // END VOID RUDDER POSITION
 #endif
@@ -361,4 +369,28 @@ ledcWrite(R_PWM, motorspeed);
 
  /*************************************************************************************/   
  
+void rudder_sensor_calibration(){
+     float rudder_position_max = 45;
+     float rudder_position_min = -45;
+     float counts_max = 1500;  // from calibration in print statement
+     //float counts_at_zero = 415;
+          float counts_at_zero = 750;
+     float counts_min = 0;
+     float counts;
 
+
+ counts = analogRead(Rudder_Pin);   
+
+
+      if(counts >= counts_at_zero) // linear calibration from zero
+      {
+          rudder_position = rudder_position_max *(counts - counts_at_zero) / (counts_max - counts_at_zero);
+      }
+      else
+      {
+          rudder_position = rudder_position_min * (counts - counts_at_zero) / (counts_min - counts_at_zero);
+      }
+
+      rcal = - rudder_position;  // reverse direction of positive rudder position for Jeff's setup.  
+
+}
